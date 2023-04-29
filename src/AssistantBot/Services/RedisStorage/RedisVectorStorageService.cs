@@ -28,7 +28,7 @@ namespace AssistantBot.Services.RedisStorage
 
         public int VectorSize => _indexVectorSize;
 
-        public object? GetDataByKey(string key)
+        public string? GetDataByKey(string key)
         {
             var value = _db.HashGet(key, _textField);
             if (value.HasValue)
@@ -54,7 +54,7 @@ namespace AssistantBot.Services.RedisStorage
             var stringGuid = Guid.NewGuid().ToString();
 
             _db.Execute("HSET", stringGuid, _textField, jsonData, _embeddingField, vectorString);
-            _db.Execute("FT.ADD", _indexName, stringGuid, "1.0", "FIELDS", _textField, jsonData, _embeddingField, vectorString);
+            //_db.Execute("FT.ADD", _indexName, stringGuid, "1.0", "FIELDS", _textField, jsonData, _embeddingField, vectorString);
 
             return stringGuid;
         }
@@ -147,6 +147,11 @@ namespace AssistantBot.Services.RedisStorage
             stopwatch.Stop();
 
             return $"PING result: {result} | Response time: {stopwatch.ElapsedMilliseconds}ms";
+        }
+
+        public IEnumerable<string> GetKeys()
+        {
+            return _server.Keys().Select(x => x.ToString());
         }
     }
 }

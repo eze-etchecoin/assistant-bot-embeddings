@@ -1,5 +1,6 @@
 ﻿using AssistantBot.Services.Interfaces;
 using AssistantBot.Services.RedisStorage;
+using Newtonsoft.Json;
 using Xunit.Abstractions;
 
 namespace AssistantBot.Tests
@@ -16,11 +17,13 @@ namespace AssistantBot.Tests
         }
 
         [Fact]
-        public void AddVector_ValidVector()
+        public void AddVector_StringData()
         {
+            var testData = "hello world";
+            
             var vector = new TestVector
             {
-                Data = "hello world",
+                Data = testData,
                 Values = GetVectorValues()
             };
 
@@ -29,8 +32,37 @@ namespace AssistantBot.Tests
             var storedData = _service.GetDataByKey(storedKey);
             Assert.NotNull(storedData);
 
-            var storedVector = (TestVector)storedData;
-            Assert.Equal(vector.Data, storedVector.Data);
+            Assert.Equal(testData, storedData);
+        }
+
+        [Fact]
+        public void AddVector_JsonData()
+        {
+            var testObject = new DataTestClass
+            {
+                Prop1 = "value1",
+                Prop2 = "value2",
+                Prop3 = "value3"
+            };
+
+            var testJson = JsonConvert.SerializeObject(testObject);
+
+            var vector = new TestVector
+            {
+                Data = testJson,
+                Values = GetVectorValues()
+            };
+
+            var storedKey = _service.AddVector(vector);
+
+            var storedData = _service.GetDataByKey(storedKey);
+            var jsonObject = JsonConvert.DeserializeObject<DataTestClass>(storedData);
+
+            Assert.NotNull(jsonObject);
+
+            Assert.Equal(testObject.Prop1, jsonObject.Prop1);
+            Assert.Equal(testObject.Prop2, jsonObject.Prop2);
+            Assert.Equal(testObject.Prop3, jsonObject.Prop3);
         }
 
         [Fact]
@@ -38,6 +70,17 @@ namespace AssistantBot.Tests
         {
             var result = _service.TestConnection();
             _testOutput.WriteLine(result);
+        }
+
+        [Fact]
+        public void GetKeysTest()
+        {
+            var result = _service.GetKeys();
+
+            foreach(var key in result)
+            {
+                _testOutput.WriteLine(key);
+            }
         }
 
         private double[] GetVectorValues()
@@ -53,5 +96,12 @@ namespace AssistantBot.Tests
     {
         public object Data { get; set; }
         public double[] Values { get; set; }
+    }
+
+    public class DataTestClass
+    {
+        public string Prop1 { get; set; }
+        public string Prop2 { get; set; }
+        public string Prop3 { get; set; }
     }
 }
