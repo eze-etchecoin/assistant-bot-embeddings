@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  assistantbot:
+    image: ${DOCKER_REGISTRY-}assistantbot
+    build:
+      context: .
+      dockerfile: AssistantBot/Dockerfile
+  cache:
+    image: redis:latest
+    ports:
+      - 6379:6379
+      

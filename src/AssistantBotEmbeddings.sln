@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssistantBot", "AssistantBo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssistantBot.Tests", "AssistantBot.Tests\AssistantBot.Tests.csproj", "{593F8DEC-B19C-4029-9E46-5F28A8708D11}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{9260597F-6A27-4003-911B-CEEBF4E56EB2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{593F8DEC-B19C-4029-9E46-5F28A8708D11}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{593F8DEC-B19C-4029-9E46-5F28A8708D11}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{593F8DEC-B19C-4029-9E46-5F28A8708D11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9260597F-6A27-4003-911B-CEEBF4E56EB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9260597F-6A27-4003-911B-CEEBF4E56EB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9260597F-6A27-4003-911B-CEEBF4E56EB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9260597F-6A27-4003-911B-CEEBF4E56EB2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
