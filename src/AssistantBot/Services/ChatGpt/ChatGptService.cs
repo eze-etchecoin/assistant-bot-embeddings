@@ -1,11 +1,11 @@
 ﻿using AssistantBot.Services.ChatGpt.Model;
 using AssistantBot.Services.Interfaces;
 using Newtonsoft.Json;
-using QAAssistantBot.Exceptions;
-using QAAssistantBot.Services.ChatGpt.Model;
+using AssistantBot.Exceptions;
+using AssistantBot.Services.ChatGpt.Model;
 using RestSharp;
 
-namespace QAAssistantBot.Services.ChatGpt
+namespace AssistantBot.Services.ChatGpt
 {
     public class ChatGptService : IChatBotService
     {

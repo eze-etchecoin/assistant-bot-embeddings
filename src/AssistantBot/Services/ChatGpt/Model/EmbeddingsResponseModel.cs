@@ -1,4 +1,4 @@
-﻿using QAAssistantBot.Services.ChatGpt.Model;
+﻿using AssistantBot.Services.ChatGpt.Model;
 
 namespace AssistantBot.Services.ChatGpt.Model
 {

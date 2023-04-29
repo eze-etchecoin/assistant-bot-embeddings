@@ -1,4 +1,4 @@
-﻿namespace QAAssistantBot.Services.ChatGpt.Model
+﻿namespace AssistantBot.Services.ChatGpt.Model
 {
     public class UsageModel
     {

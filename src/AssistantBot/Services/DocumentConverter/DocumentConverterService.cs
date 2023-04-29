@@ -3,11 +3,11 @@ using iText.Kernel.Pdf;
 using AssistantBot.DataTypes;
 using AssistantBot.DocumentManagers;
 using AssistantBot.Services.Interfaces;
-using QAAssistantBot.Exceptions;
+using AssistantBot.Exceptions;
 using System.Globalization;
 using System.Reflection.Metadata.Ecma335;
 
-namespace QAAssistantBot.Services.DocumentConverter
+namespace AssistantBot.Services.DocumentConverter
 {
     public class DocumentConverterService : IDocumentToTextConverter
     {

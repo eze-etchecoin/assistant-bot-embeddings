@@ -1,6 +1,6 @@
 ﻿using AssistantBot.Services.Interfaces;
 
-namespace QAAssistantBot.Services.ChatGpt.Model
+namespace AssistantBot.Services.ChatGpt.Model
 {
     public class FineTuneDataModel : ITrainingDataModel
     {

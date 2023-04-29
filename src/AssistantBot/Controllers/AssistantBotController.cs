@@ -1,8 +1,8 @@
 ﻿using AssistantBot.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using QAAssistantBot.Models;
+using AssistantBot.Models;
 
-namespace QAAssistantBot.Controllers
+namespace AssistantBot.Controllers
 {
     [ApiController]
     [Route("[controller]")]

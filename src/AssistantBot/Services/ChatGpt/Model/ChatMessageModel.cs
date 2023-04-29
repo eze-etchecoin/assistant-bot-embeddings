@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 
-namespace QAAssistantBot.Services.ChatGpt.Model
+namespace AssistantBot.Services.ChatGpt.Model
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     public class ChatMessageModel

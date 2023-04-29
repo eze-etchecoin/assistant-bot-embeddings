@@ -3,7 +3,7 @@ using Newtonsoft.Json.Serialization;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace QAAssistantBot.Services.ChatGpt.Model
+namespace AssistantBot.Services.ChatGpt.Model
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     public class ChatCompletionResponseModel

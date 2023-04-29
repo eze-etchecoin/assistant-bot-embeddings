@@ -1,7 +1,7 @@
 ﻿using AssistantBot.Configuration;
 using AssistantBot.Services.Interfaces;
-using QAAssistantBot.Exceptions;
-using QAAssistantBot.Services.ChatGpt;
+using AssistantBot.Exceptions;
+using AssistantBot.Services.ChatGpt;
 
 namespace AssistantBot.Services.Factories
 {

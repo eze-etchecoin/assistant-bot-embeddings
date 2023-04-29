@@ -1,4 +1,4 @@
-﻿namespace QAAssistantBot.Models
+﻿namespace AssistantBot.Models
 {
     public class SendMessageRequest
     {

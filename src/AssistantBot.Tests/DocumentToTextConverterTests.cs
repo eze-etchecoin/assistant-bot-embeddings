@@ -1,5 +1,5 @@
 ﻿using AssistantBot.Services.Interfaces;
-using QAAssistantBot.Services.DocumentConverter;
+using AssistantBot.Services.DocumentConverter;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 

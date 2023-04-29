@@ -2,7 +2,7 @@
 
 namespace AssistantBot.Services.Interfaces
 {
-    public interface IMemoryStorage
+    public interface IRemoteMemoryStorage
     {
         /// <summary>
         /// For saving values into storage.
@@ -16,7 +16,7 @@ namespace AssistantBot.Services.Interfaces
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        object Get(string key);
+        object? GetDataByKey(string key);
 
         /// <summary>
         /// Search in storage according to certain value, and get first N results
@@ -24,5 +24,7 @@ namespace AssistantBot.Services.Interfaces
         /// <param name="valueToSearch"></param>
         /// <returns></returns>
         IEnumerable<object> SearchForValues(object valueToSearch, int numberOfResults = 10);
+
+        string TestConnection();
     }
 }
