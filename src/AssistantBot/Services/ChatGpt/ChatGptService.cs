@@ -44,7 +44,7 @@ namespace AssistantBot.Services.ChatGpt
             var chatResponse = GetResponse<ChatCompletionResponseModel>(response);
 
             if (!chatResponse.Choices.Any())
-                throw new QAAssistantBotException($"Assistant is not available.");
+                throw new AssistantBotException($"Assistant is not available.");
 
             // The first (or only) value is returned
             return chatResponse.Choices.First().Message.Content;
@@ -61,7 +61,7 @@ namespace AssistantBot.Services.ChatGpt
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<double>> GetEmbeddings(string textToTransform)
+        public async Task<IEnumerable<double>> GetEmbedding(string textToTransform)
         {
             var request = GetRequest("/v1/embeddings", Method.Post);
             request.AddJsonBody(new EmbeddingsRequestModel
@@ -88,7 +88,7 @@ namespace AssistantBot.Services.ChatGpt
         private T GetResponse<T>(RestResponse restResponse)
         {
             if (!restResponse.IsSuccessful)
-                throw new QAAssistantBotException(restResponse.ErrorMessage ?? restResponse.Content);
+                throw new AssistantBotException(restResponse.ErrorMessage ?? restResponse.Content);
 
             // The response content is deserialized (it comes in JSON format)
             var response = JsonConvert.DeserializeObject<T>(restResponse.Content);

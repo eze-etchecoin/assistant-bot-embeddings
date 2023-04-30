@@ -49,7 +49,7 @@ namespace AssistantBot.Services.DocumentConverter
             var validExtensions = new[] { PdfExtension, DocExtension, DocXExtension };
 
             if (validExtensions.All(x => x != fileExtension))
-                throw new QAAssistantBotException($"File extension {fileExtension} not supported.");
+                throw new AssistantBotException($"File extension {fileExtension} not supported.");
         }
     }
 }

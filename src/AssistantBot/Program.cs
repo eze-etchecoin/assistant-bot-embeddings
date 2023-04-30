@@ -1,5 +1,8 @@
 using AssistantBot.Configuration;
+using AssistantBot.DataTypes;
 using AssistantBot.Services.Factories;
+using AssistantBot.Services.Interfaces;
+using AssistantBot.Services.RedisStorage;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +16,9 @@ builder.Services.AddSwaggerGen();
 // ChatGptService is instanciated.
 var openAiApiKey = Environment.GetEnvironmentVariable(StartupEnvironmentVariables.OpenAIApiKey) ?? "NO_KEY";
 builder.Services.AddSingleton(sp => new ChatBotServiceFactory().CreateService(ChatBotServiceOption.ChatGpt));
+
+builder.Services.AddSingleton<IIndexedVectorStorage<EmbeddedTextVector>>(sp =>
+    new RedisVectorStorageService<EmbeddedTextVector>("localhost:6379"));
 
 var app = builder.Build();
 

@@ -1,4 +1,4 @@
-﻿namespace AssistantBot.Models
+﻿namespace AssistantBot.Models.AssistantBot
 {
     public class SendMessageRequest
     {

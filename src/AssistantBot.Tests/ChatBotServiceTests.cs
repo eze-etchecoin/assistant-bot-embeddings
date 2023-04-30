@@ -41,7 +41,7 @@ namespace AssistantBot.Tests
                 "La cigüeña toca el saxofón detrás del palenque de paja. " +
                 "1234567890";
 
-            var result = await _service.GetEmbeddings(text);
+            var result = await _service.GetEmbedding(text);
 
             Assert.NotNull(result);
             Assert.NotEmpty(result);

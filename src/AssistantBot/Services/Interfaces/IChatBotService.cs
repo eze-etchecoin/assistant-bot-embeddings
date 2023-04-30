@@ -7,6 +7,6 @@
         Task<string> SendTrainingInput(ITrainingDataModel dataModel);
         Task<string> SendTrainingInput(IEnumerable<ITrainingDataModel> dataModels);
 
-        Task<IEnumerable<double>> GetEmbeddings(string textToTransform);
+        Task<IEnumerable<double>> GetEmbedding(string textToTransform);
     }
 }

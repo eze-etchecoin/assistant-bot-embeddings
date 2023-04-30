@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace AssistantBot.Exceptions
 {
-    public class QAAssistantBotException : Exception
+    public class AssistantBotException : Exception
     {
-        public QAAssistantBotException(string message) 
+        public AssistantBotException(string message) 
             : base(message) { }
 
-        public QAAssistantBotException(string message, Exception innerException)
+        public AssistantBotException(string message, Exception innerException)
             : base(message, innerException) { }
     }
 }

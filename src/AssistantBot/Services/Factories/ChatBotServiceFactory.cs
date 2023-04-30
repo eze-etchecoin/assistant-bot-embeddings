@@ -12,7 +12,7 @@ namespace AssistantBot.Services.Factories
             return chatBotServiceOption switch
             {
                 ChatBotServiceOption.ChatGpt => new ChatGptService(Environment.GetEnvironmentVariable(StartupEnvironmentVariables.OpenAIApiKey) ?? ""),
-                _ => throw new QAAssistantBotException("No ChatBotServiceOption specified.")
+                _ => throw new AssistantBotException("No ChatBotServiceOption specified.")
             };
         }
     }
