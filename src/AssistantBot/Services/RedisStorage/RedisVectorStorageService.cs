@@ -81,7 +81,9 @@ namespace AssistantBot.Services.RedisStorage
                 vector.Values.Select(x => x.ToString(CultureInfo.InvariantCulture)));
 
             var queryResult = _db.Execute(
-                "FT.SEARCH", _indexName, "VECTORS", "SIMILARITY", _embeddingField, queryVectorString, "RETURN", numResults.ToString(), _textField);
+                "FT.SEARCH", _indexName, 
+                $"\"*=>[KNN {numResults} {queryVectorString}\"]"
+                /*"DIALECT 2"*/);
 
             var searchResults = (RedisValue[]?)queryResult;
             
