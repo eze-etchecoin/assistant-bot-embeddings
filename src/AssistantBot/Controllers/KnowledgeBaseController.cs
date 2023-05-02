@@ -1,6 +1,7 @@
 ﻿using AssistantBot.DataTypes;
 using AssistantBot.Exceptions;
 using AssistantBot.Models.KnowledgeBase;
+using AssistantBot.Services;
 using AssistantBot.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,15 +10,13 @@ namespace AssistantBot.Controllers
 {
     public class KnowledgeBaseController : Controller
     {
-        private readonly IChatBotService _chatBotService;
-        private readonly IIndexedVectorStorage<EmbeddedTextVector> _indexedVectorStorage;
+        private readonly KnowledgeBaseService _service;
 
         public KnowledgeBaseController(
             IChatBotService chatBotService,
             IIndexedVectorStorage<EmbeddedTextVector> indexedVectorStorage)
         {
-            _chatBotService = chatBotService;
-            _indexedVectorStorage = indexedVectorStorage;
+            _service = new KnowledgeBaseService(chatBotService, indexedVectorStorage);
         }
 
         [HttpPost("AddParagraphToKnowledgeBase")]
@@ -26,18 +25,7 @@ namespace AssistantBot.Controllers
         {   
             try
             {
-                if (string.IsNullOrEmpty(request.Paragraph))
-                    return Ok("Empty text.");
-
-                    var embedding = await _chatBotService.GetEmbedding(request.Paragraph);
-                if (embedding == null)
-                    throw new AssistantBotException("An error has ocurred getting the embedding for given text.");
-
-                var storedKey = _indexedVectorStorage.AddVector(new EmbeddedTextVector
-                {
-                    Values = embedding.ToArray(),
-                    ParagraphWithPage = new ParagraphWithPage(1, request.Paragraph)
-                });
+                var storedKey = await _service.AddParagraphToKnowledgeBase(request.Paragraph);
 
                 return Ok(storedKey);
             }

@@ -104,8 +104,7 @@ namespace AssistantBot.Services.RedisStorage
         {
             if (!IndexExists(_indexName))
             {
-                IServer server = _redis.GetServer("localhost", 6379);
-                server.Execute(
+                _server.Execute(
                     "FT.CREATE", 
                     _indexName, "ON", "HASH", "SCHEMA", 
                     _textField, "TEXT", 

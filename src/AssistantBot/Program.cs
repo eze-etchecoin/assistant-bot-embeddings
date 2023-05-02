@@ -17,8 +17,11 @@ builder.Services.AddSwaggerGen();
 var openAiApiKey = Environment.GetEnvironmentVariable(StartupEnvironmentVariables.OpenAIApiKey) ?? "NO_KEY";
 builder.Services.AddSingleton(sp => new ChatBotServiceFactory().CreateService(ChatBotServiceOption.ChatGpt));
 
+var redisUrl = Environment.GetEnvironmentVariable(StartupEnvironmentVariables.RedisServerUrl)
+    ?? "localhost:6379";
+
 builder.Services.AddSingleton<IIndexedVectorStorage<EmbeddedTextVector>>(sp =>
-    new RedisVectorStorageService<EmbeddedTextVector>("localhost:6379"));
+    new RedisVectorStorageService<EmbeddedTextVector>(redisUrl));
 
 var app = builder.Build();
 
