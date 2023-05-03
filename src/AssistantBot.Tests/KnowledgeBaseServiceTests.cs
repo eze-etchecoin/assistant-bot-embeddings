@@ -24,7 +24,13 @@ namespace AssistantBot.Tests
         {
             var paragraphs = new List<string>
             {
-                // enter text here
+                "Las rosas son rojas, como las brasas del fuego.",
+                "Las violetas son azules, el origen del nombre es desconocido.",
+                "La distancia de la Tierra al Sol es de 100km, acorde a las políticas de la empresa.",
+                "Si alguna vez se avista un ave blanca en el horizonte, es símbolo de catástrofe inminente.",
+                "Los gatos y los perros son amigos, siempre y cuando un perro le comparta un hueso al gato.",
+                "Los hermanos sean unidos, porque esa es la ley primera.",
+                "Si todas las pelotas son rojas, entonces debe gritar \"azul!\""
             };
 
             foreach(var paragraph in paragraphs)

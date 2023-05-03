@@ -1,4 +1,5 @@
 ﻿using AssistantBot.Services.Interfaces;
+using AssistantBot.Utils;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 using System.Diagnostics;
@@ -75,15 +76,13 @@ namespace AssistantBot.Services.RedisStorage
             
             if (numResults < 1)
                 return result;
-            
-            string queryVectorString = string.Join(
-                ",", 
-                vector.Values.Select(x => x.ToString(CultureInfo.InvariantCulture)));
 
             var queryResult = _db.Execute(
                 "FT.SEARCH", _indexName, 
-                $"\"*=>[KNN {numResults} {queryVectorString}\"]"
-                /*"DIALECT 2"*/);
+                $"*=>[KNN {numResults} $BLOB]", 
+                "PARAMS 2", 
+                "BLOB", BinaryConverter.ConvertDoubleArrayToBinary(vector.Values),
+                "DIALECT 2");
 
             var searchResults = (RedisValue[]?)queryResult;
             
