@@ -1,4 +1,4 @@
-﻿namespace AssistantBot.Services.Interfaces
+﻿namespace AssistantBot.Common.Interfaces
 {
     public interface IVector
     {

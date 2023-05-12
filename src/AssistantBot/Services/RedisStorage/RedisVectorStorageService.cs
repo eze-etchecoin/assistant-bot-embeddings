@@ -1,9 +1,8 @@
-﻿using AssistantBot.Services.Interfaces;
-using AssistantBot.Utils;
+﻿using AssistantBot.Common.Interfaces;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 using System.Diagnostics;
-using System.Globalization;
+using System.Text;
 
 namespace AssistantBot.Services.RedisStorage
 {
@@ -14,7 +13,8 @@ namespace AssistantBot.Services.RedisStorage
         private readonly IServer _server;
 
         private const string _indexName = "textVectorIndex";
-        private const int _indexVectorSize = 1536;
+        private const int _vectorSize = 1536;
+        private const int _indexVectorSize = _vectorSize * sizeof(double);
         private const string _textField = "text";
         private const string _embeddingField = "embedding";
 
@@ -27,7 +27,7 @@ namespace AssistantBot.Services.RedisStorage
             CreateIndex();
         }
 
-        public int VectorSize => _indexVectorSize;
+        public int VectorSize => _vectorSize;
 
         public string? GetDataByKey(string key)
         {
@@ -38,19 +38,19 @@ namespace AssistantBot.Services.RedisStorage
                 return null;
         }
 
-        public void Set(string key, object value)
+        public void Set(string key, T value)
         {
             throw new System.NotImplementedException();
         }
 
-        public IEnumerable<object> SearchForValues(object valueToSearch, int numberOfResults = 10)
+        public IEnumerable<T> SearchForValues(T valueToSearch, int numberOfResults = 10)
         {
             throw new System.NotImplementedException();
         }
 
         public string AddVector(T vector)
         {
-            var vectorString = string.Join(",", vector.Values.Select(x => x.ToString(CultureInfo.InvariantCulture)));
+            var vectorString = GetVectorHexRepresentation(vector);
             var jsonData = JsonConvert.SerializeObject(vector.Data);
             var stringGuid = Guid.NewGuid().ToString();
 
@@ -70,29 +70,41 @@ namespace AssistantBot.Services.RedisStorage
             throw new NotImplementedException();
         }
 
-        public IList<object> SearchDataBySimilarVector(T vector, int numResults = 1)
+        public IList<TResult> SearchDataBySimilarVector<TResult>(T vector, int numResults = 1)
         {
-            var result = new List<object>();
+            var result = new List<TResult>();
             
             if (numResults < 1)
                 return result;
 
-            var queryResult = _db.Execute(
-                "FT.SEARCH", _indexName, 
-                $"*=>[KNN {numResults} $BLOB]", 
-                "PARAMS 2", 
-                "BLOB", BinaryConverter.ConvertDoubleArrayToBinary(vector.Values),
-                "DIALECT 2");
+            var queryArgs = new string[]
+            {
+                _indexName,
+                $"*=>[KNN {numResults} @{_embeddingField} $BLOB]",
+                "PARAMS", "2",
+                "BLOB", $"{GetVectorHexRepresentation(vector)}",
+                "DIALECT", "2"
+            };
+                
+            var queryResult = _db.Execute("FT.SEARCH", queryArgs);
 
-            var searchResults = (RedisValue[]?)queryResult;
-            
+            var searchResults = ((RedisResult[]?)queryResult) ?? Array.Empty<RedisResult>();
+
             if ((long)searchResults[0] <= 0)
                 return result;
 
             for (int i = 1; i < searchResults.Length; i += 2)
             {
-                string docId = (string)searchResults[i];
-                var data = JsonConvert.DeserializeObject(searchResults[i + 1]);
+                var docId = (string?)searchResults[i];
+
+                var values = (RedisValue[]?)searchResults[i + 1];
+
+                var indexOfJsonDataField = Array.IndexOf(
+                    values.Select(x => x.ToString()).ToArray(), 
+                    _textField);
+
+                var data = JsonConvert.DeserializeObject<TResult>(values[indexOfJsonDataField + 1]);
+
                 result.Add(data);
 
                 //Console.WriteLine($"Document ID: {docId}, Text: {text}");
@@ -152,6 +164,26 @@ namespace AssistantBot.Services.RedisStorage
         public IEnumerable<string> GetKeys()
         {
             return _server.Keys().Select(x => x.ToString());
+        }
+
+        public void DeleteAllKeys()
+        {
+            _ = _db.Execute("FLUSHDB");
+        }
+
+        private string GetVectorHexRepresentation(T vector)
+        {
+            byte[] bytes = new byte[_vectorSize * sizeof(double)];
+
+            Buffer.BlockCopy(vector.Values, 0, bytes, 0, bytes.Length);
+
+            var sb = new StringBuilder();
+            foreach (byte b in bytes)
+            {
+                sb.Append("\\x" + b.ToString("X2"));
+            }
+
+            return sb.ToString();
         }
     }
 }

@@ -10,7 +10,14 @@ services:
       - QA_BOT_REDIS_URL=cache:6379
       - QA_BOT_OPENAI_APIKEY=${QA_BOT_OPENAI_APIKEY}
 
-  cache:
-    image: redis/redis-stack-server:latest
-    ports:
-      - 6379:6379
+  assistantbot.customcache:
+    image: ${DOCKER_REGISTRY-}assistantbotcustomcache
+    build:
+      context: .
+      dockerfile: AssistantBot.CustomCache/Dockerfile
+
+  #cache:
+  #  image: redis/redis-stack-server:latest
+  #  ports:
+  #    - 6379:6379
+

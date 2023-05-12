@@ -1,4 +1,4 @@
-﻿using AssistantBot.Services.Interfaces;
+﻿using AssistantBot.Common.Interfaces;
 using AssistantBot.Services.DocumentConverter;
 using Xunit.Abstractions;
 using Xunit.Sdk;

@@ -10,16 +10,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="itext7" Version="7.2.5" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.2" />
+    <PackageReference Include="itext7" Version="8.0.0" />
+    <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="RestSharp" Version="108.0.3" />
-    <PackageReference Include="StackExchange.Redis" Version="2.6.104" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="RestSharp" Version="110.2.0" />
+    <PackageReference Include="StackExchange.Redis" Version="2.6.111" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Services\RedisStorage\Model\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AssistantBot.Common\AssistantBot.Common.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,5 @@
 ﻿using AssistantBot.Configuration;
-using AssistantBot.Services.Interfaces;
+using AssistantBot.Common.Interfaces;
 using AssistantBot.Exceptions;
 using AssistantBot.Services.ChatGpt;
 

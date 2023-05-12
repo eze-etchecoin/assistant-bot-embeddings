@@ -1,6 +1,8 @@
-﻿namespace AssistantBot.DataTypes
+﻿using AssistantBot.Common.Interfaces;
+
+namespace AssistantBot.DataTypes
 {
-    public struct ParagraphWithPage
+    public struct ParagraphWithPage : IParagraphWithPage
     {
         private readonly int _page;
         private readonly string _text;

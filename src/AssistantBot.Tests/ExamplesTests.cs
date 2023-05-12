@@ -1,4 +1,6 @@
-﻿using Xunit.Abstractions;
+﻿using System.Text;
+using Xunit;
+using Xunit.Abstractions;
 
 namespace AssistantBot.Tests
 {
@@ -43,6 +45,42 @@ namespace AssistantBot.Tests
             {
                 _outputHelper.WriteLine(@int.ToString());
             }
+        }
+
+        [Fact]
+        public void IntVectorToBytesConversion()
+        {
+            int[] vector = { 18, 169, 245, 108 };
+            byte[] bytes = new byte[vector.Length];
+
+            for (int i = 0; i < vector.Length; i++)
+            {
+                bytes[i] = (byte)vector[i];
+            }
+
+            string hexadecimal = BitConverter.ToString(bytes);
+
+            _outputHelper.WriteLine(hexadecimal);
+        }
+
+        [Fact]
+        public void DoubleVectorToBytesConversion()
+        {
+            double[] vector = { 18.5, 169.2, 245.8, 108.3 };
+            byte[] bytes = new byte[vector.Length * sizeof(double)];
+
+            Buffer.BlockCopy(vector, 0, bytes, 0, bytes.Length);
+
+            string hexadecimal = BitConverter.ToString(bytes);
+
+            _outputHelper.WriteLine(hexadecimal);
+
+            var sbX = new StringBuilder();
+            foreach (byte b in bytes)
+            {
+                sbX.Append("\\x" + b.ToString("X2"));
+            }
+            _outputHelper.WriteLine(sbX.ToString());
         }
     }
 }

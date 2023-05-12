@@ -1,4 +1,4 @@
-﻿using AssistantBot.Services.Interfaces;
+﻿using AssistantBot.Common.Interfaces;
 using AssistantBot.Services.RedisStorage;
 using Newtonsoft.Json;
 using Xunit.Abstractions;
@@ -81,6 +81,12 @@ namespace AssistantBot.Tests
             {
                 _testOutput.WriteLine(key);
             }
+        }
+
+        [Fact]
+        public void DeleteAllKeysTest()
+        {
+            _service.DeleteAllKeys();
         }
 
         private double[] GetVectorValues()

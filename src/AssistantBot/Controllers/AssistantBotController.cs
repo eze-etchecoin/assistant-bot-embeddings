@@ -1,4 +1,4 @@
-﻿using AssistantBot.Services.Interfaces;
+﻿using AssistantBot.Common.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using AssistantBot.Models.AssistantBot;
 using AssistantBot.DataTypes;

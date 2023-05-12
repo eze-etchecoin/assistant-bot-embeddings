@@ -11,7 +11,7 @@ te proporciono la base de conocimientos sobre la que debes basarte para responde
 
 <BaseDeConocimiento>
 {knowledgeBase}
-</BaseDeConocimiento
+</BaseDeConocimiento>
 
 Si la pregunta que el usuario te hace se aleja de la información brindada en la base de conocimientos, deberás responder
 ""Lo siento, la información que usted requiere no se encuentra aún en mi base de conocimientos"".

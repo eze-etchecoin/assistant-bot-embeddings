@@ -1,9 +1,8 @@
 ﻿using AssistantBot.Services.ChatGpt.Model;
-using AssistantBot.Services.Interfaces;
-using Newtonsoft.Json;
+using AssistantBot.Common.Interfaces;
 using AssistantBot.Exceptions;
-using AssistantBot.Services.ChatGpt.Model;
 using RestSharp;
+using AssistantBot.Helpers;
 
 namespace AssistantBot.Services.ChatGpt
 {
@@ -25,23 +24,21 @@ namespace AssistantBot.Services.ChatGpt
         public async Task<string> SendMessage(string message)
         {
             // Request is built here, pointing to OpenAI corresponding endpoint
-            var request = GetRequest("/v1/chat/completions", Method.Post);
+            var restSharpHelper = new RestSharpJsonHelper<ChatCompletionRequestModel, ChatCompletionResponseModel>(_client);
 
-            // Content type application/json is built here
-            request.AddJsonBody(new ChatCompletionRequestModel
-            {
-                Messages = new[] 
+            var chatResponse = await restSharpHelper.ExecuteRequestAsync(
+                url: "/v1/chat/completions",
+                method: Method.Post,
+                body: new ChatCompletionRequestModel
                 {
-                    new ChatMessageModel(ChatMessageRoles.User, message)
+                    Messages = new[]
+                    {
+                        new ChatMessageModel(ChatMessageRoles.User, message)
+                    },
+                    Model = _chatModel,
+                    Max_tokens = 256
                 },
-                Model = _chatModel,
-                Max_tokens = 256
-            });
-
-            // Request is executed, and a response must be received
-            var response = await _client.ExecuteAsync(request);
-
-            var chatResponse = GetResponse<ChatCompletionResponseModel>(response);
+                new[] { AuthorizationHeader });
 
             if (!chatResponse.Choices.Any())
                 throw new AssistantBotException($"Assistant is not available.");
@@ -63,37 +60,22 @@ namespace AssistantBot.Services.ChatGpt
 
         public async Task<IEnumerable<double>> GetEmbedding(string textToTransform)
         {
-            var request = GetRequest("/v1/embeddings", Method.Post);
-            request.AddJsonBody(new EmbeddingsRequestModel
-            {
-                Model = TextEmbeddingModels.Text_Embedding_Ada_002,
-                Input = textToTransform
-            });
+            var restSharpHelper = new RestSharpJsonHelper<EmbeddingsRequestModel, EmbeddingsResponseModel>(_client);
 
-            var response = await _client.ExecuteAsync(request);
-
-            var embeddingsResponse = GetResponse<EmbeddingsResponseModel>(response);
+            var embeddingsResponse = await restSharpHelper.ExecuteRequestAsync(
+                url: "/v1/embeddings",
+                method: Method.Post,
+                body: new EmbeddingsRequestModel
+                {
+                    Model = TextEmbeddingModels.Text_Embedding_Ada_002,
+                    Input = textToTransform
+                },
+                headers: new[] { AuthorizationHeader });
 
             return embeddingsResponse.Data.First().Embedding;
         }
 
-        private RestRequest GetRequest(string url, Method method)
-        {
-            var request = new RestRequest(url, method);
-            request.AddHeader("Authorization", $"Bearer {_apiKey}");
+        private (string, string) AuthorizationHeader => ("Authorization", $"Bearer {_apiKey}");
 
-            return request;
-        }
-
-        private T GetResponse<T>(RestResponse restResponse)
-        {
-            if (!restResponse.IsSuccessful)
-                throw new AssistantBotException(restResponse.ErrorMessage ?? restResponse.Content);
-
-            // The response content is deserialized (it comes in JSON format)
-            var response = JsonConvert.DeserializeObject<T>(restResponse.Content);
-
-            return response ?? Activator.CreateInstance<T>();
-        }
     }
 }

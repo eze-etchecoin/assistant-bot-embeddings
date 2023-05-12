@@ -3,6 +3,7 @@ using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf;
 using System.Text;
 using AssistantBot.DataTypes;
+using AssistantBot.Common.Interfaces;
 
 namespace AssistantBot.DocumentManagers
 {
@@ -28,9 +29,9 @@ namespace AssistantBot.DocumentManagers
             return result.ToString();
         }
 
-        public static IEnumerable<ParagraphWithPage> ExtractTextInParagraphsFromDocument(string filePath, bool skipEmpty)
+        public static IEnumerable<IParagraphWithPage> ExtractTextInParagraphsFromDocument(string filePath, bool skipEmpty)
         {
-            var result = Enumerable.Empty<ParagraphWithPage>();
+            var result = Enumerable.Empty<IParagraphWithPage>();
 
             var reader = new PdfReader(filePath);
             using (var document = new PdfDocument(reader))
@@ -40,7 +41,7 @@ namespace AssistantBot.DocumentManagers
                     var strategy = new SimpleTextExtractionStrategy();
                     var text = PdfTextExtractor.GetTextFromPage(document.GetPage(page), strategy);
 
-                    var paragraphs = text.Split("\n").Select(p => new ParagraphWithPage(page, p));
+                    var paragraphs = text.Split("\n").Select(p => new ParagraphWithPage(page, p) as IParagraphWithPage);
 
                     if (skipEmpty)
                         paragraphs = paragraphs.Where(x => !string.IsNullOrEmpty(x.Text.Trim()));

@@ -1,4 +1,4 @@
-﻿using AssistantBot.Services.Interfaces;
+﻿using AssistantBot.Common.Interfaces;
 
 namespace AssistantBot.Services.Factories
 {

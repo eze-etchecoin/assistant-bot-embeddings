@@ -1,15 +1,13 @@
-﻿using System.Collections.Generic;
-
-namespace AssistantBot.Services.Interfaces
+﻿namespace AssistantBot.Common.Interfaces
 {
-    public interface IRemoteMemoryStorage
+    public interface IRemoteMemoryStorage<T>
     {
         /// <summary>
         /// For saving values into storage.
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        void Set(string key, object value);
+        void Set(string key, T value);
 
         /// <summary>
         /// For getting values from storage
@@ -23,9 +21,10 @@ namespace AssistantBot.Services.Interfaces
         /// </summary>
         /// <param name="valueToSearch"></param>
         /// <returns></returns>
-        IEnumerable<object> SearchForValues(object valueToSearch, int numberOfResults = 10);
+        IEnumerable<T> SearchForValues(T valueToSearch, int numberOfResults = 10);
 
         IEnumerable<string> GetKeys();
+        void DeleteAllKeys();
 
         string TestConnection();
     }

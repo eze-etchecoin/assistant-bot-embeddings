@@ -1,11 +1,6 @@
-﻿
-using iText.Kernel.Pdf;
-using AssistantBot.DataTypes;
-using AssistantBot.DocumentManagers;
-using AssistantBot.Services.Interfaces;
+﻿using AssistantBot.DocumentManagers;
+using AssistantBot.Common.Interfaces;
 using AssistantBot.Exceptions;
-using System.Globalization;
-using System.Reflection.Metadata.Ecma335;
 
 namespace AssistantBot.Services.DocumentConverter
 {
@@ -28,16 +23,16 @@ namespace AssistantBot.Services.DocumentConverter
             };
         }
 
-        public IEnumerable<ParagraphWithPage> GetParagraphsTextWithPageNumber(string filePath, bool skipEmpty = true)
+        public IEnumerable<IParagraphWithPage> GetParagraphsTextWithPageNumber(string filePath, bool skipEmpty = true)
         {
             CheckFileExtension(filePath);
 
             return Path.GetExtension(filePath) switch
             {
                 PdfExtension => PdfManager.ExtractTextInParagraphsFromDocument(filePath, skipEmpty),
-                DocXExtension => Enumerable.Empty<ParagraphWithPage>(),
-                DocExtension => Enumerable.Empty<ParagraphWithPage>(),
-                _ => Enumerable.Empty<ParagraphWithPage>(),
+                DocXExtension => Enumerable.Empty<IParagraphWithPage>(),
+                DocExtension => Enumerable.Empty<IParagraphWithPage>(),
+                _ => Enumerable.Empty<IParagraphWithPage>(),
             };
 
             throw new NotImplementedException();

@@ -1,7 +1,7 @@
 ﻿using AssistantBot.DataTypes;
 using AssistantBot.Exceptions;
 using AssistantBot.Models.AssistantBot;
-using AssistantBot.Services.Interfaces;
+using AssistantBot.Common.Interfaces;
 
 namespace AssistantBot.Services
 {
@@ -33,7 +33,7 @@ namespace AssistantBot.Services
 
             var questionEmbedding = await _chatBotService.GetEmbedding(question);
 
-            var knowledgeBaseTopResults = _indexedVectorStorage.SearchDataBySimilarVector(
+            var knowledgeBaseTopResults = _indexedVectorStorage.SearchDataBySimilarVector<ParagraphWithPage>(
                 new EmbeddedTextVector
                 {
                     Values = questionEmbedding.ToArray()
@@ -44,7 +44,7 @@ namespace AssistantBot.Services
                 throw new AssistantBotException("Error at question processing.");
 
             var userQuestionPrompt = PromptTemplate.GetPromptFromTemplate(
-                string.Join("\n", knowledgeBaseTopResults.Select(x => x.ToString())),
+                string.Join("\n", knowledgeBaseTopResults.Select(x => x.Text)),
                 question);
 
             var result = await _chatBotService.SendMessage(userQuestionPrompt);

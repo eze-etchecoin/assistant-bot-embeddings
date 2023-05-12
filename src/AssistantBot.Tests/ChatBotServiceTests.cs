@@ -1,5 +1,5 @@
 using AssistantBot.Services.Factories;
-using AssistantBot.Services.Interfaces;
+using AssistantBot.Common.Interfaces;
 using Xunit.Abstractions;
 
 namespace AssistantBot.Tests
