@@ -18,7 +18,7 @@ namespace AssistantBot.Tests
             _service = new CustomMemoryStorageService<TestVector>(
                 new AssistantBotConfiguration(Options.Create(new AssistantBotConfigurationOptions
                 {
-                    CustomCacheUrl = "http://localhost:58649"
+                    CustomCacheUrl = "http://localhost:61226"
                 })));
 
             _testOutput = testOutput;

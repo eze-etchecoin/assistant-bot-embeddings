@@ -37,7 +37,7 @@ namespace AssistantBot.Services.Integrations
         public string? GetDataByKey(string key)
         {
             var restSharpHelper = new RestSharpJsonHelper<object, string>(_client);
-            var response = restSharpHelper.ExecuteRequestAsync($"/GetKeys?key={key}", Method.Get).Result;
+            var response = restSharpHelper.ExecuteRequestAsync($"/GetDataByKey?key={key}", Method.Get).Result;
 
             return response;
         }

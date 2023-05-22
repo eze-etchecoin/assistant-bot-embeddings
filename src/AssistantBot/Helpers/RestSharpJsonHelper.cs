@@ -60,10 +60,24 @@ namespace AssistantBot.Helpers
             if (!restResponse.IsSuccessful)
                 throw new AssistantBotException(restResponse.ErrorMessage ?? restResponse.Content);
 
-            // The response content is deserialized (it comes in JSON format)
-            var response = JsonConvert.DeserializeObject<TResponse>(restResponse.Content);
 
-            return response;
+            if (string.IsNullOrEmpty(restResponse.Content))
+                return default;
+
+            try
+            {
+                if(typeof(TResponse) == typeof(string))
+                {
+                    return (TResponse)(object)restResponse.Content.Replace("\"", "");
+                }
+
+                // The response content is deserialized (it comes in JSON format))
+                return JsonConvert.DeserializeObject<TResponse>(restResponse.Content);
+            }
+            catch(Exception ex)
+            {
+                throw new AssistantBotException(ex.Message, ex);
+            }
         }
     }
 }

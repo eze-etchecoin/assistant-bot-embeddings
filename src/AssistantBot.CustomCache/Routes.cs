@@ -11,8 +11,9 @@ namespace AssistantBot.CustomCache
                 "/AddVector", 
                 async(HttpContext context, CustomMemoryStorage<IVectorWithObject> storage) =>
                 {
-                    var requestBody = await context.Request.ReadFromJsonAsync<EmbeddedTextVector>();
-                    storage.AddVector(requestBody);
+                    var requestBody = await context.Request.ReadFromJsonAsync<VectorWithObject>();
+                    var storedKey = storage.AddVector(requestBody);
+                    return Results.Ok(storedKey);
                 })
             .WithName("AddVector");
 
@@ -20,7 +21,7 @@ namespace AssistantBot.CustomCache
                 "/SearchDataBySimilarVector",
                 async (HttpContext context, CustomMemoryStorage<IVectorWithObject> storage) =>
                 {
-                    var requestBody = await context.Request.ReadFromJsonAsync<EmbeddedTextVector>();
+                    var requestBody = await context.Request.ReadFromJsonAsync<VectorWithObject>();
                     if(!int.TryParse(context.Request.Query["numResults"], out var num))
                     {
                         num = 1;

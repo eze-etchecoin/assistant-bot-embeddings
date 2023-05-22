@@ -39,10 +39,10 @@ namespace AssistantBot.CustomCache
         {
             if (!_dict.TryGetValue(key, out var value))
             {
-                value = default;
+                return null;
             }
 
-            var result = JsonConvert.SerializeObject(value);
+            var result = JsonConvert.SerializeObject(value.Data);
 
             return result;
         }
