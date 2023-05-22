@@ -1,5 +1,7 @@
 ﻿using AssistantBot.Common.Interfaces;
-using AssistantBot.Services.RedisStorage;
+using AssistantBot.Configuration;
+using AssistantBot.Services.Integrations;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Xunit.Abstractions;
 
@@ -12,7 +14,13 @@ namespace AssistantBot.Tests
 
         public IndexedVectorStorageTests(ITestOutputHelper testOutput)
         {
-            _service = new RedisVectorStorageService<TestVector>("localhost:6379");
+            //_service = new RedisVectorStorageService<TestVector>("localhost:6379");
+            _service = new CustomMemoryStorageService<TestVector>(
+                new AssistantBotConfiguration(Options.Create(new AssistantBotConfigurationOptions
+                {
+                    CustomCacheUrl = "http://localhost:58649"
+                })));
+
             _testOutput = testOutput;
         }
 

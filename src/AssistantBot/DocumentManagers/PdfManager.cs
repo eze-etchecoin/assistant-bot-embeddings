@@ -2,7 +2,7 @@
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf;
 using System.Text;
-using AssistantBot.DataTypes;
+using AssistantBot.Common.DataTypes;
 using AssistantBot.Common.Interfaces;
 
 namespace AssistantBot.DocumentManagers

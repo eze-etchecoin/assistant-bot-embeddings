@@ -26,6 +26,6 @@
         IEnumerable<string> GetKeys();
         void DeleteAllKeys();
 
-        string TestConnection();
+        string? TestConnection();
     }
 }

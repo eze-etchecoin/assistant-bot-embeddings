@@ -8,13 +8,14 @@ namespace AssistantBot.Services.Integrations
     public class CustomMemoryStorageService<T> : IIndexedVectorStorage<T> where T : IVectorWithObject
     {
         private readonly RestClient _client;
+        private const int _vectorSize = 1536;
 
         public CustomMemoryStorageService(AssistantBotConfiguration config)
         {
             _client = new RestClient(config.CustomCacheUrl);
         }
 
-        public int VectorSize => throw new NotImplementedException();
+        public int VectorSize => _vectorSize;
 
         public string AddVector(T vector)
         {
@@ -35,7 +36,10 @@ namespace AssistantBot.Services.Integrations
 
         public string? GetDataByKey(string key)
         {
-            throw new NotImplementedException();
+            var restSharpHelper = new RestSharpJsonHelper<object, string>(_client);
+            var response = restSharpHelper.ExecuteRequestAsync($"/GetKeys?key={key}", Method.Get).Result;
+
+            return response;
         }
 
         public IEnumerable<string> GetKeys()
@@ -70,7 +74,7 @@ namespace AssistantBot.Services.Integrations
             throw new NotImplementedException();
         }
 
-        public string TestConnection()
+        public string? TestConnection()
         {
             var restSharpHelper = new RestSharpJsonHelper<object, string>(_client);
             var response = restSharpHelper.ExecuteRequestAsync("/Check", Method.Get).Result;

@@ -1,5 +1,5 @@
-﻿using AssistantBot.Configuration;
-using AssistantBot.DataTypes;
+﻿using AssistantBot.Common.DataTypes;
+using AssistantBot.Configuration;
 using AssistantBot.Services;
 using AssistantBot.Services.Factories;
 using AssistantBot.Services.Integrations;

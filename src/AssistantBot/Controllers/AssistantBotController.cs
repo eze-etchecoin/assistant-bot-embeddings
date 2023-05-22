@@ -1,7 +1,7 @@
-﻿using AssistantBot.Common.Interfaces;
+﻿using AssistantBot.Common.DataTypes;
+using AssistantBot.Common.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using AssistantBot.Models.AssistantBot;
-using AssistantBot.DataTypes;
 using AssistantBot.Services;
 
 namespace AssistantBot.Controllers

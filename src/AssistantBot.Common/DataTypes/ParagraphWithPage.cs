@@ -1,6 +1,6 @@
 ﻿using AssistantBot.Common.Interfaces;
 
-namespace AssistantBot.DataTypes
+namespace AssistantBot.Common.DataTypes
 {
     public struct ParagraphWithPage : IParagraphWithPage
     {

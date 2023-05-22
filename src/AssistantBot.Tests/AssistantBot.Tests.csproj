@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AssistantBot.Common\AssistantBot.Common.csproj" />
     <ProjectReference Include="..\AssistantBot\AssistantBot.csproj" />
   </ItemGroup>
 

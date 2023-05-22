@@ -1,8 +1,7 @@
 using AssistantBot.Configuration;
-using AssistantBot.DataTypes;
-using AssistantBot.Services.Factories;
+using AssistantBot.Common.DataTypes;
 using AssistantBot.Common.Interfaces;
-using AssistantBot.Services.RedisStorage;
+using AssistantBot.Services.Factories;
 using AssistantBot.Services.Integrations;
 
 var builder = WebApplication.CreateBuilder(args);

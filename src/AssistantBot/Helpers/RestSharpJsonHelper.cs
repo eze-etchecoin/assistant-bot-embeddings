@@ -13,14 +13,14 @@ namespace AssistantBot.Helpers
             _client = client;
         }
 
-        public async Task<TResponse> ExecuteRequestAsync(
+        public async Task<TResponse?> ExecuteRequestAsync(
             string url, 
             Method method, 
             TBody? body = default, 
             IEnumerable<(string, string)>? headers = null)
         {
             // Request is built here, pointing to OpenAI corresponding endpoint
-            var request = RestSharpJsonHelper<TBody, TResponse>.GetRequest("/v1/chat/completions", Method.Post, headers);
+            var request = RestSharpJsonHelper<TBody, TResponse?>.GetRequest(url, method, headers);
 
             // Content type application/json is built here
             if (body != null)
@@ -55,7 +55,7 @@ namespace AssistantBot.Helpers
             return request;
         }
 
-        private static TResponse GetResponse(RestResponse restResponse)
+        private static TResponse? GetResponse(RestResponse restResponse)
         {
             if (!restResponse.IsSuccessful)
                 throw new AssistantBotException(restResponse.ErrorMessage ?? restResponse.Content);
@@ -63,7 +63,7 @@ namespace AssistantBot.Helpers
             // The response content is deserialized (it comes in JSON format)
             var response = JsonConvert.DeserializeObject<TResponse>(restResponse.Content);
 
-            return response ?? Activator.CreateInstance<TResponse>();
+            return response;
         }
     }
 }

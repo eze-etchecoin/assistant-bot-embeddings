@@ -1,4 +1,6 @@
 ﻿using AssistantBot.Common.Interfaces;
+using MathNet.Numerics;
+using MathNet.Numerics.LinearAlgebra;
 using Newtonsoft.Json;
 using System.Collections.Concurrent;
 
@@ -35,9 +37,14 @@ namespace AssistantBot.CustomCache
 
         public string? GetDataByKey(string key)
         {
-            return _dict.TryGetValue(key, out var result)
-                ? JsonConvert.SerializeObject(result)
-                : null;
+            if (!_dict.TryGetValue(key, out var value))
+            {
+                value = default;
+            }
+
+            var result = JsonConvert.SerializeObject(value);
+
+            return result;
         }
 
         public IEnumerable<string> GetKeys()
@@ -52,11 +59,17 @@ namespace AssistantBot.CustomCache
 
         public IList<TResult> SearchDataBySimilarVector<TResult>(T vectorToSearch, int numResults = 1)
         {
-            var dataWithScore = _dict
-                .Select(x => new { Score = 0, Vector = x.Value })
+            var vector1 = Vector<double>.Build.Dense(vectorToSearch.Values);
+            
+            var vectorsWithScore = _dict
+                .Select(x => new 
+                { 
+                    Score = 1 - Distance.Euclidean(vector1, Vector<double>.Build.Dense(x.Value.Values)),
+                    Vector = x.Value
+                })
                 .ToList();
 
-            var orderedData = dataWithScore
+            var orderedData = vectorsWithScore
                 .OrderByDescending(x => x.Score)
                 .Take(numResults)
                 .ToList();

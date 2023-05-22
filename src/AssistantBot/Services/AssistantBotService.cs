@@ -1,4 +1,4 @@
-﻿using AssistantBot.DataTypes;
+﻿using AssistantBot.Common.DataTypes;
 using AssistantBot.Exceptions;
 using AssistantBot.Models.AssistantBot;
 using AssistantBot.Common.Interfaces;

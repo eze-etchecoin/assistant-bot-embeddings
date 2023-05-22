@@ -1,7 +1,7 @@
-﻿using AssistantBot.DataTypes;
+﻿using AssistantBot.Common.DataTypes;
+using AssistantBot.Common.Interfaces;
 using AssistantBot.Models.KnowledgeBase;
 using AssistantBot.Services;
-using AssistantBot.Common.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 
