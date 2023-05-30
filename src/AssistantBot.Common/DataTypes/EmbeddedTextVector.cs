@@ -3,7 +3,7 @@
 namespace AssistantBot.Common.DataTypes
 {
     public class EmbeddedTextVector : IVectorWithObject
-    {   
+    {
         public ParagraphWithPage ParagraphWithPage { get; set; }
         public double[] Values { get; set; }
 

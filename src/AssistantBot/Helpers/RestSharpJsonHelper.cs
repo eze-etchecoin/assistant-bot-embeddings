@@ -68,7 +68,12 @@ namespace AssistantBot.Helpers
             {
                 if(typeof(TResponse) == typeof(string))
                 {
-                    return (TResponse)(object)restResponse.Content.Replace("\"", "");
+                    // remove only first and last quotes from content
+                    string content = restResponse.Content;
+                    content = content.Remove(0, 1);
+                    content = content.Remove(content.Length - 1, 1);
+                    content = content.Replace("\\", "");
+                    return (TResponse)(object)content;
                 }
 
                 // The response content is deserialized (it comes in JSON format))

@@ -6,6 +6,8 @@ services:
     build:
       context: .
       dockerfile: AssistantBot/Dockerfile
+    ports:
+      - 59168:80
     environment:
       - QA_BOT_REDIS_URL=cache:6379
       - QA_BOT_OPENAI_APIKEY=${QA_BOT_OPENAI_APIKEY}
@@ -15,6 +17,8 @@ services:
     build:
       context: .
       dockerfile: AssistantBot.CustomCache/Dockerfile
+    ports:
+      - 59166:80
 
   #cache:
   #  image: redis/redis-stack-server:latest

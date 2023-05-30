@@ -36,7 +36,7 @@ namespace AssistantBot.Services.ChatGpt
                         new ChatMessageModel(ChatMessageRoles.User, message)
                     },
                     Model = _chatModel,
-                    Max_tokens = 256
+                    MaxTokens = 256
                 },
                 new[] { AuthorizationHeader });
 

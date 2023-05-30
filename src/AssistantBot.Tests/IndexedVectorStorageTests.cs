@@ -1,4 +1,5 @@
-﻿using AssistantBot.Common.Interfaces;
+﻿using AssistantBot.Common.DataTypes;
+using AssistantBot.Common.Interfaces;
 using AssistantBot.Configuration;
 using AssistantBot.Services.Integrations;
 using Microsoft.Extensions.Options;
@@ -9,68 +10,59 @@ namespace AssistantBot.Tests
 {
     public class IndexedVectorStorageTests
     {
-        private readonly IIndexedVectorStorage<TestVector> _service;
+        private readonly IIndexedVectorStorage<EmbeddedTextVector> _service;
         private readonly ITestOutputHelper _testOutput;
 
         public IndexedVectorStorageTests(ITestOutputHelper testOutput)
         {
             //_service = new RedisVectorStorageService<TestVector>("localhost:6379");
-            _service = new CustomMemoryStorageService<TestVector>(
+            _service = new CustomMemoryStorageService<EmbeddedTextVector>(
                 new AssistantBotConfiguration(Options.Create(new AssistantBotConfigurationOptions
                 {
-                    CustomCacheUrl = "http://localhost:61226"
+                    CustomCacheUrl = "http://localhost:59166"
                 })));
 
             _testOutput = testOutput;
         }
 
-        [Fact]
-        public void AddVector_StringData()
-        {
-            var testData = "hello world";
+        //[Fact]
+        //public void AddVector_StringData()
+        //{
+        //    var testData = "hello world";
             
-            var vector = new TestVector
-            {
-                Data = testData,
-                Values = GetVectorValues()
-            };
+        //    var vector = new TestVector
+        //    {
+        //        Data = testData,
+        //        Values = GetVectorValues()
+        //    };
 
-            var storedKey = _service.AddVector(vector);
+        //    var storedKey = _service.AddVector(vector);
 
-            var storedData = _service.GetDataByKey(storedKey);
-            Assert.NotNull(storedData);
+        //    var storedData = _service.GetDataByKey(storedKey);
+        //    Assert.NotNull(storedData);
 
-            Assert.Equal(testData, storedData);
-        }
+        //    Assert.Equal(testData, storedData);
+        //}
 
         [Fact]
-        public void AddVector_JsonData()
+        public void AddVector_EmbeddedTextVector()
         {
-            var testObject = new DataTestClass
+            var rnd = new Random();
+            
+            var vector = new EmbeddedTextVector
             {
-                Prop1 = "value1",
-                Prop2 = "value2",
-                Prop3 = "value3"
-            };
-
-            var testJson = JsonConvert.SerializeObject(testObject);
-
-            var vector = new TestVector
-            {
-                Data = testJson,
+                ParagraphWithPage = new ParagraphWithPage(1, $"Test{rnd.Next(1_000_000)}"),
                 Values = GetVectorValues()
             };
 
             var storedKey = _service.AddVector(vector);
 
             var storedData = _service.GetDataByKey(storedKey);
-            var jsonObject = JsonConvert.DeserializeObject<DataTestClass>(storedData);
+            var jsonObject = JsonConvert.DeserializeObject<ParagraphWithPage>(storedData);
 
             Assert.NotNull(jsonObject);
 
-            Assert.Equal(testObject.Prop1, jsonObject.Prop1);
-            Assert.Equal(testObject.Prop2, jsonObject.Prop2);
-            Assert.Equal(testObject.Prop3, jsonObject.Prop3);
+            Assert.Equal(vector.ParagraphWithPage.Text, jsonObject.Text);
         }
 
         [Fact]

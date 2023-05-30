@@ -17,23 +17,27 @@ namespace AssistantBot.Services.ChatGpt.Model
         /// ID of the model to use. You can use the List models API to see all of your available models, 
         /// or see our Model overview for descriptions of them.
         /// </summary>
+        [JsonProperty("model")]
         public string Model { get; set; }
 
         /// <summary>
         /// The messages to generate chat completions for, in the chat format.
         /// </summary>
+        [JsonProperty("messages")]
         public IEnumerable<ChatMessageModel> Messages { get; set; }
 
         /// <summary>
         /// The maximum number of tokens to generate in the completion.
         /// </summary>
-        public int Max_tokens { get; set; } = 16;
+        [JsonProperty("max_tokens")]
+        public int MaxTokens { get; set; } = 16;
 
         /// <summary>
         /// What sampling temperature to use, between 0 and 2. 
         /// Higher values like 0.8 will make the output more random, 
         /// while lower values like 0.2 will make it more focused and deterministic.
         /// </summary>
+        [JsonProperty("temperature")]
         public decimal Temperature { get; set; } = 1;
 
         /// <summary>
@@ -43,6 +47,7 @@ namespace AssistantBot.Services.ChatGpt.Model
         /// 
         /// We generally recommend altering this or <code>Temperature</code> but not both.
         /// </summary>
-        public decimal Top_p { get; set; } = 1;
+        [JsonProperty("top_p")]
+        public decimal TopP { get; set; } = 1;
     }
 }

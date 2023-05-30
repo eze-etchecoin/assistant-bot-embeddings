@@ -4,16 +4,13 @@ namespace AssistantBot.Common.DataTypes
 {
     public struct ParagraphWithPage : IParagraphWithPage
     {
-        private readonly int _page;
-        private readonly string _text;
-
         public ParagraphWithPage(int page, string text)
         {
-            _page = page;
-            _text = text;
+            Page = page;
+            Text = text;
         }
 
-        public int Page { get { return _page; } }
-        public string Text { get { return _text; } }
+        public int Page { get; set; }
+        public string Text { get; set; }
     }
 }

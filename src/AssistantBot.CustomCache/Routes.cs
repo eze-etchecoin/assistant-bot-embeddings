@@ -1,5 +1,6 @@
 ﻿using AssistantBot.Common.DataTypes;
 using AssistantBot.Common.Interfaces;
+using System.Text;
 
 namespace AssistantBot.CustomCache
 {
@@ -11,8 +12,8 @@ namespace AssistantBot.CustomCache
                 "/AddVector", 
                 async(HttpContext context, CustomMemoryStorage<IVectorWithObject> storage) =>
                 {
-                    var requestBody = await context.Request.ReadFromJsonAsync<VectorWithObject>();
-                    var storedKey = storage.AddVector(requestBody);
+                    var vectorObject = await context.Request.ReadFromJsonAsync<EmbeddedTextVector>();
+                    var storedKey = storage.AddVector(vectorObject);
                     return Results.Ok(storedKey);
                 })
             .WithName("AddVector");
@@ -21,7 +22,7 @@ namespace AssistantBot.CustomCache
                 "/SearchDataBySimilarVector",
                 async (HttpContext context, CustomMemoryStorage<IVectorWithObject> storage) =>
                 {
-                    var requestBody = await context.Request.ReadFromJsonAsync<VectorWithObject>();
+                    var requestBody = await context.Request.ReadFromJsonAsync<EmbeddedTextVector>();
                     if(!int.TryParse(context.Request.Query["numResults"], out var num))
                     {
                         num = 1;
@@ -57,6 +58,11 @@ namespace AssistantBot.CustomCache
                 "/Check",
                 (CustomMemoryStorage<IVectorWithObject> storage) => Results.Ok(storage.TestConnection()))
             .WithName("Check");
+
+            app.MapDelete(
+                "/DeleteAllKeys",
+                (CustomMemoryStorage<IVectorWithObject> storage) => storage.DeleteAllKeys())
+            .WithName("DeleteAllKeys");
         }
     }
 }

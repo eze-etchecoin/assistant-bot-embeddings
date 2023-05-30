@@ -31,7 +31,8 @@ namespace AssistantBot.Services.Integrations
 
         public void DeleteAllKeys()
         {
-            throw new NotImplementedException();
+            var restSharpHelper = new RestSharpJsonHelper<object, object>(_client);
+            _ = restSharpHelper.ExecuteRequestAsync("/DeleteAllKeys", Method.Delete);
         }
 
         public string? GetDataByKey(string key)

@@ -1,9 +1,17 @@
-﻿namespace AssistantBot.Services.ChatGpt.Model
+﻿using Newtonsoft.Json;
+
+namespace AssistantBot.Services.ChatGpt.Model
 {
     public class UsageModel
     {
-        public int Prompt_tokens { get; set; }
-        public int Completion_tokens { get; set; }
-        public int Total_tokens { get; set; }
+
+        [JsonProperty("prompt_tokens")] 
+        public int PromptTokens { get; set; }
+
+        [JsonProperty("completion_tokens")]
+        public int CompletionTokens { get; set; }
+
+        [JsonProperty("total_tokens")]
+        public int TotalTokens { get; set; }
     }
 }
