@@ -23,7 +23,7 @@ namespace AssistantBot.Tests
                     new AssistantBotConfiguration(
                         Options.Create(new AssistantBotConfigurationOptions
                         {
-                            CustomCacheUrl = "http://localhost:59166" // container
+                            CustomCacheUrl = "https://localhost:44328"
                         }))));
         }
 

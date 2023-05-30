@@ -9,7 +9,7 @@ namespace AssistantBot.CustomCache
     public class CustomMemoryStorage<T> : IIndexedVectorStorage<T> where T : IVectorWithObject
     {
         private const int _vectorSize = 1536;
-        private readonly ConcurrentDictionary<string, T> _dict;
+        private ConcurrentDictionary<string, T> _dict;
 
         public CustomMemoryStorage()
         {
@@ -32,7 +32,7 @@ namespace AssistantBot.CustomCache
 
         public void DeleteAllKeys()
         {
-            _dict.Clear();
+            _dict = new ConcurrentDictionary<string, T>();
         }
 
         public string? GetDataByKey(string key)
