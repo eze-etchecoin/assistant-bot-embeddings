@@ -1,6 +1,6 @@
 ﻿using AssistantBot.Common.Interfaces;
 using AssistantBot.Configuration;
-using AssistantBot.Helpers;
+using AssistantBot.Common.Helpers;
 using RestSharp;
 
 namespace AssistantBot.Services.Integrations

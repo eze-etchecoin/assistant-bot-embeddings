@@ -1,6 +1,6 @@
 ﻿using AssistantBot.Common.DataTypes;
 using AssistantBot.Common.Interfaces;
-using AssistantBot.Exceptions;
+using AssistantBot.Common.Exceptions;
 
 namespace AssistantBot.Services
 {

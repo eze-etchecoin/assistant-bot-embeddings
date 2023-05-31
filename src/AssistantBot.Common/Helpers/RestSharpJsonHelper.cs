@@ -1,8 +1,8 @@
-﻿using AssistantBot.Exceptions;
+﻿using AssistantBot.Common.Exceptions;
 using Newtonsoft.Json;
 using RestSharp;
 
-namespace AssistantBot.Helpers
+namespace AssistantBot.Common.Helpers
 {
     public class RestSharpJsonHelper<TBody, TResponse>
     {

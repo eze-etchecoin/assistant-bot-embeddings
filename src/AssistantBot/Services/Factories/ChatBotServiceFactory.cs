@@ -1,6 +1,6 @@
 ﻿using AssistantBot.Configuration;
 using AssistantBot.Common.Interfaces;
-using AssistantBot.Exceptions;
+using AssistantBot.Common.Exceptions;
 using AssistantBot.Services.ChatGpt;
 
 namespace AssistantBot.Services.Factories

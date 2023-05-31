@@ -1,6 +1,6 @@
 ﻿using AssistantBot.DocumentManagers;
 using AssistantBot.Common.Interfaces;
-using AssistantBot.Exceptions;
+using AssistantBot.Common.Exceptions;
 
 namespace AssistantBot.Services.DocumentConverter
 {

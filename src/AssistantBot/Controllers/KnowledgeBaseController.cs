@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AssistantBot.Controllers
 {
-    public class KnowledgeBaseController : Controller
+    [ApiController]
+    [Route("[controller]")]
+    public class KnowledgeBaseController : ControllerBase
     {
         private readonly KnowledgeBaseService _service;
 

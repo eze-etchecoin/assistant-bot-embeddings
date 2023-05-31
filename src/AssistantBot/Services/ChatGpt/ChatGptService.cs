@@ -1,8 +1,8 @@
 ﻿using AssistantBot.Services.ChatGpt.Model;
 using AssistantBot.Common.Interfaces;
-using AssistantBot.Exceptions;
+using AssistantBot.Common.Exceptions;
 using RestSharp;
-using AssistantBot.Helpers;
+using AssistantBot.Common.Helpers;
 
 namespace AssistantBot.Services.ChatGpt
 {

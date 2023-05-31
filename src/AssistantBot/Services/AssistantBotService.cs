@@ -1,5 +1,5 @@
 ﻿using AssistantBot.Common.DataTypes;
-using AssistantBot.Exceptions;
+using AssistantBot.Common.Exceptions;
 using AssistantBot.Models.AssistantBot;
 using AssistantBot.Common.Interfaces;
 
