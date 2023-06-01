@@ -7,9 +7,9 @@ namespace AssistantBot.Services.Cache
     {
         private readonly string _path;
 
-        public InDiskCache(string path)
+        public InDiskCache()
         {
-            _path = path;
+            _path = Path.Combine(".", "Cache", "embeddings.json");
         }
 
         public async Task<T> LoadAsync()

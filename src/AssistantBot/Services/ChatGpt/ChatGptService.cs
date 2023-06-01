@@ -17,12 +17,11 @@ namespace AssistantBot.Services.ChatGpt
         private readonly RestClient _client;
         private readonly InDiskCache<Dictionary<string, double[]>> _embeddingsDiskCache;
 
-        public ChatGptService(string apiKey)
+        public ChatGptService(string apiKey, InDiskCache<Dictionary<string, double[]>> inDiskCache)
         {
             _apiKey = apiKey;
             _client = new RestClient(BaseUrl);
-            _embeddingsDiskCache = new InDiskCache<Dictionary<string, double[]>>(
-                Path.Combine(".", "Cache", "embeddings.json"));
+            _embeddingsDiskCache = inDiskCache;
         }
 
         public async Task<string> SendMessage(string message)
