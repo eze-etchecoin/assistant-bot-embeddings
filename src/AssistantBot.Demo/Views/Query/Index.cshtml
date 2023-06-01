@@ -2,6 +2,14 @@
     <script src="~/js/VueModels/Query/Index.js"></script>
 }
 
+
+
 <div id="vueContainer">
-    <p>{{ Texto }}</p>
+    <p>Ingrese una pregunta:</p>
+    <input type="text" v-model="Texto" class="text-input" style="border: 1px solid #ccc; padding: 5px ;margin-bottom: 10px;" />
+    <p>El texto que se ingreso es: {{Texto}}</p>
+    <div>
+        <button>Enviar</button>
+    </div>
+
 </div>
