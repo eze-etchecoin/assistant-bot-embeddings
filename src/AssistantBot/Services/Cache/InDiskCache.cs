@@ -14,6 +14,13 @@ namespace AssistantBot.Services.Cache
 
         public async Task<T> LoadAsync()
         {
+            var directoryName = Path.GetDirectoryName(_path);
+            if (Directory.Exists(directoryName) == false)
+                Directory.CreateDirectory(directoryName);
+            
+            if (!File.Exists(_path))
+                return Activator.CreateInstance<T>();
+
             var data = await File.ReadAllTextAsync(_path);
             return JsonConvert.DeserializeObject<T>(data) ?? Activator.CreateInstance<T>();
         }

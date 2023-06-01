@@ -21,7 +21,8 @@ namespace AssistantBot.Services.ChatGpt
         {
             _apiKey = apiKey;
             _client = new RestClient(BaseUrl);
-            _embeddingsDiskCache = new InDiskCache<Dictionary<string, double[]>>("embeddings.json");
+            _embeddingsDiskCache = new InDiskCache<Dictionary<string, double[]>>(
+                Path.Combine(".", "Cache", "embeddings.json"));
         }
 
         public async Task<string> SendMessage(string message)
@@ -63,6 +64,13 @@ namespace AssistantBot.Services.ChatGpt
 
         public async Task<IEnumerable<double>> GetEmbedding(string textToTransform)
         {
+            var cachedEmbeddings = await _embeddingsDiskCache.LoadAsync();
+
+            if (cachedEmbeddings.TryGetValue(textToTransform, out var cachedEmbedding))
+            {
+                return cachedEmbedding;
+            }
+
             var restSharpHelper = new RestSharpJsonHelper<EmbeddingsRequestModel, EmbeddingsResponseModel>(_client);
 
             var embeddingsResponse = await restSharpHelper.ExecuteRequestAsync(
@@ -75,7 +83,12 @@ namespace AssistantBot.Services.ChatGpt
                 },
                 headers: new[] { AuthorizationHeader });
 
-            return embeddingsResponse.Data.First().Embedding;
+            var embedding = embeddingsResponse.Data.First().Embedding;
+
+            cachedEmbeddings[textToTransform] = embedding.ToArray();
+            await _embeddingsDiskCache.SaveAsync(cachedEmbeddings);
+
+            return embedding;
         }
 
         private (string, string) AuthorizationHeader => ("Authorization", $"Bearer {_apiKey}");
