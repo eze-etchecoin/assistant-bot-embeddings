@@ -2,7 +2,6 @@
 using AssistantBot.Common.Interfaces;
 using AssistantBot.Models.KnowledgeBase;
 using AssistantBot.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
 
