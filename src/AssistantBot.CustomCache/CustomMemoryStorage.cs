@@ -7,6 +7,7 @@ using System.Collections.Concurrent;
 namespace AssistantBot.CustomCache
 {
     public class CustomMemoryStorage<T> : IIndexedVectorStorage<T> where T : IVectorWithObject
+        
     {
         private const int _vectorSize = 1536;
         private ConcurrentDictionary<int, T> _dict;
