@@ -7,14 +7,14 @@
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        void Set(string key, T value);
+        void Set(int key, T value);
 
         /// <summary>
         /// For getting values from storage
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        string? GetDataByKey(string key);
+        string? GetDataByKey(int key);
 
         /// <summary>
         /// Search in storage according to certain value, and get first N results
@@ -23,7 +23,7 @@
         /// <returns></returns>
         IEnumerable<T> SearchForValues(T valueToSearch, int numberOfResults = 10);
 
-        IEnumerable<string> GetKeys();
+        IEnumerable<int> GetKeys();
         void DeleteAllKeys();
 
         string? TestConnection();

@@ -9,7 +9,7 @@ namespace AssistantBot.CustomCache
     public class CustomMemoryStorage<T> : IIndexedVectorStorage<T> where T : IVectorWithObject
     {
         private const int _vectorSize = 1536;
-        private ConcurrentDictionary<string, T> _dict;
+        private ConcurrentDictionary<int, T> _dict;
 
         public CustomMemoryStorage()
         {
@@ -18,11 +18,16 @@ namespace AssistantBot.CustomCache
 
         public int VectorSize => _vectorSize;
 
-        public string AddVector(T vector)
+        public int AddVector(T vector)
         {
-            var newGuid = Guid.NewGuid().ToString();
-            _dict[newGuid] = vector;
-            return newGuid;
+            var hashCode = CalculateHashCode(vector);
+
+            if (!_dict.ContainsKey(hashCode))
+            {
+                _dict[hashCode] = vector;
+            }
+
+            return hashCode;
         }
 
         public bool Contains(T vector)
@@ -32,10 +37,10 @@ namespace AssistantBot.CustomCache
 
         public void DeleteAllKeys()
         {
-            _dict = new ConcurrentDictionary<string, T>();
+            _dict = new ConcurrentDictionary<int, T>();
         }
 
-        public string? GetDataByKey(string key)
+        public string? GetDataByKey(int key)
         {
             if (!_dict.TryGetValue(key, out var value))
             {
@@ -47,7 +52,7 @@ namespace AssistantBot.CustomCache
             return result;
         }
 
-        public IEnumerable<string> GetKeys()
+        public IEnumerable<int> GetKeys()
         {
             return _dict.Keys;
         }
@@ -82,7 +87,7 @@ namespace AssistantBot.CustomCache
             throw new NotImplementedException();
         }
 
-        public void Set(string key, T value)
+        public void Set(int key, T value)
         {
             _dict[key] = value;
         }
@@ -91,5 +96,15 @@ namespace AssistantBot.CustomCache
         {
             return _dict != null ? "OK" : "No OK";
         }
+
+        private static int CalculateHashCode(T vector) =>
+            vector.Values.Aggregate(
+                new HashCode(),
+                (hash, value) =>
+                {
+                    hash.Add(value);
+                    return hash;
+                })
+                .ToHashCode();
     }
 }

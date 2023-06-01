@@ -17,21 +17,21 @@ namespace AssistantBot.Services
             _indexedVectorStorage = indexedVectorStorage;
         }
 
-        public async Task<string> AddParagraphToKnowledgeBase(string paragraph)
+        public async Task<int> AddParagraphToKnowledgeBase(string paragraph)
         {
             if (string.IsNullOrEmpty(paragraph))
-                return "Empty text.";
+                return 0;
 
             var embedding = await _chatBotService.GetEmbedding(paragraph) 
                 ?? throw new AssistantBotException("An error has ocurred getting the embedding for given text.");
 
-            var storedKey = _indexedVectorStorage.AddVector(new EmbeddedTextVector
+            var storedHash = _indexedVectorStorage.AddVector(new EmbeddedTextVector
             {
                 Values = embedding.ToArray(),
                 ParagraphWithPage = new ParagraphWithPage(1, paragraph)
             });
 
-            return storedKey;
+            return storedHash;
         }
     }
 }

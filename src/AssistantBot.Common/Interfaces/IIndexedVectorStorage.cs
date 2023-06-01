@@ -4,7 +4,7 @@
     {
         int VectorSize { get; }
 
-        string AddVector(T vector);
+        int AddVector(T vector);
         void RemoveVector(T vector);
         bool Contains(T vector);
         IList<TResult> SearchDataBySimilarVector<TResult>(T vectorToSearch, int numResults = 1);
