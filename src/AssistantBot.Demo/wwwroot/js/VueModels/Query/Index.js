@@ -9,7 +9,7 @@ const { createApp } = Vue;
 createApp({
     data() {
         return {
-            Texto: "Hola Vue!"
+            Texto: ""
         }
     }
 }).mount('#vueContainer');
