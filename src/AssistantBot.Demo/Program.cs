@@ -3,7 +3,12 @@ using RestSharp;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+
+var mvcBuilder = builder.Services.AddControllersWithViews();
+if(builder.Environment.IsDevelopment())
+{
+    mvcBuilder.AddRazorRuntimeCompilation();
+}
 
 //var apiUrl = builder.Configuration["ApiUrl"];
 //builder.Services.AddSingleton<IRestClient, RestClient>(sp => new RestClient(apiUrl));

@@ -1,6 +1,5 @@
 ﻿using AssistantBot.Common.DataTypes;
 using AssistantBot.Common.Interfaces;
-using System.Text;
 
 namespace AssistantBot.CustomCache
 {
@@ -13,8 +12,8 @@ namespace AssistantBot.CustomCache
                 async(HttpContext context, CustomMemoryStorage<IVectorWithObject> storage) =>
                 {
                     var vectorObject = await context.Request.ReadFromJsonAsync<EmbeddedTextVector>();
-                    var storedKey = storage.AddVector(vectorObject);
-                    return Results.Ok(storedKey);
+                    var storedHash = storage.AddVector(vectorObject);
+                    return Results.Ok(storedHash);
                 })
             .WithName("AddVector");
 
@@ -36,11 +35,11 @@ namespace AssistantBot.CustomCache
                 "/GetDataByKey",
                 (HttpContext context, CustomMemoryStorage<IVectorWithObject> storage) => 
                 {
-                    var key = context.Request.Query["key"];
+                    var key = context.Request.Query["key"].ToString();
                     if (string.IsNullOrEmpty(key))
                         return Results.BadRequest("A valid key must be specified.");
 
-                    var result = storage.GetDataByKey(key);
+                    var result = storage.GetDataByKey(Convert.ToInt32(key));
 
                     if (result == null)
                         return Results.BadRequest("Invalid key");

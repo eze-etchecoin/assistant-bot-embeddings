@@ -1,3 +1,4 @@
+// Esto era en Vue 2
 //const vm = new Vue({
 //    el: '#vueContainer',
 //    data: {

@@ -55,9 +55,9 @@ namespace AssistantBot.Tests
                 Values = GetVectorValues()
             };
 
-            var storedKey = _service.AddVector(vector);
+            var storedHash = _service.AddVector(vector);
 
-            var storedData = _service.GetDataByKey(storedKey);
+            var storedData = _service.GetDataByKey(storedHash);
             var jsonObject = JsonConvert.DeserializeObject<ParagraphWithPage>(storedData);
 
             Assert.NotNull(jsonObject);
@@ -79,7 +79,7 @@ namespace AssistantBot.Tests
 
             foreach(var key in result)
             {
-                _testOutput.WriteLine(key);
+                _testOutput.WriteLine(key.ToString());
             }
         }
 

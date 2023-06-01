@@ -29,16 +29,16 @@ namespace AssistantBot.Services.RedisStorage
 
         public int VectorSize => _vectorSize;
 
-        public string? GetDataByKey(string key)
+        public string? GetDataByKey(int key)
         {
-            var value = _db.HashGet(key, _textField);
+            var value = _db.HashGet(key.ToString(), _textField);
             if (value.HasValue)
                 return value;
             else
                 return null;
         }
 
-        public void Set(string key, T value)
+        public void Set(int key, T value)
         {
             throw new System.NotImplementedException();
         }
@@ -48,16 +48,16 @@ namespace AssistantBot.Services.RedisStorage
             throw new System.NotImplementedException();
         }
 
-        public string AddVector(T vector)
+        public int AddVector(T vector)
         {
             var vectorString = GetVectorHexRepresentation(vector);
             var jsonData = JsonConvert.SerializeObject(vector.Data);
-            var stringGuid = Guid.NewGuid().ToString();
+            var hash = CalculateHashCode(vector);
 
-            _db.Execute("HSET", stringGuid, _textField, jsonData, _embeddingField, vectorString);
+            _db.Execute("HSET", hash.ToString(), _textField, jsonData, _embeddingField, vectorString);
             //_db.Execute("FT.ADD", _indexName, stringGuid, "1.0", "FIELDS", _textField, jsonData, _embeddingField, vectorString);
 
-            return stringGuid;
+            return hash;
         }
 
         public void RemoveVector(T vector)
@@ -161,9 +161,9 @@ namespace AssistantBot.Services.RedisStorage
             return $"PING result: {result} | Response time: {stopwatch.ElapsedMilliseconds}ms";
         }
 
-        public IEnumerable<string> GetKeys()
+        public IEnumerable<int> GetKeys()
         {
-            return _server.Keys().Select(x => x.ToString());
+            return _server.Keys().Select(x => Convert.ToInt32(x));
         }
 
         public void DeleteAllKeys()
@@ -185,5 +185,15 @@ namespace AssistantBot.Services.RedisStorage
 
             return sb.ToString();
         }
+
+        private static int CalculateHashCode(T vector) =>
+            vector.Values.Aggregate(
+                new HashCode(),
+                (hash, value) =>
+                {
+                    hash.Add(value);
+                    return hash;
+                })
+                .ToHashCode();
     }
 }

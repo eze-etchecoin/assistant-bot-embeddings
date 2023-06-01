@@ -3,6 +3,7 @@ using AssistantBot.Common.Interfaces;
 using AssistantBot.Common.Exceptions;
 using RestSharp;
 using AssistantBot.Common.Helpers;
+using AssistantBot.Services.Cache;
 
 namespace AssistantBot.Services.ChatGpt
 {
@@ -14,11 +15,13 @@ namespace AssistantBot.Services.ChatGpt
         private const string BaseUrl = "https://api.openai.com";
 
         private readonly RestClient _client;
+        private readonly InDiskCache<Dictionary<string, double[]>> _embeddingsDiskCache;
 
         public ChatGptService(string apiKey)
         {
             _apiKey = apiKey;
             _client = new RestClient(BaseUrl);
+            _embeddingsDiskCache = new InDiskCache<Dictionary<string, double[]>>("embeddings.json");
         }
 
         public async Task<string> SendMessage(string message)
