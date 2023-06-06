@@ -36,33 +36,23 @@ namespace AssistantBot.Controllers
             }
         }
 
-        [HttpPost("/UploadFileToKnowledgeBase")]
+        [HttpPost("UploadFile")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         //[ServiceFilter(typeof(ValidateMimeMultipartContentFilter))]
-        public IActionResult UploadFileToKnowledgeBase(FileDescriptionShort fileDescriptionShort)
+        public IActionResult UploadFile(IFormFile file)
         {
-            var uploadedFilePath = "";
-            //var contentTypes = new List<string>();
-
-            foreach (var file in fileDescriptionShort.File)
+            try
             {
+                var uploadedFilePath = "";
+
                 if (file.Length > 0)
                 {
                     var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition)
                         .FileName.ToString().Trim('"');
 
-                    //contentTypes.Add(file.ContentType);
-
-                    //names.Add(fileName);
-
                     var extension = Path.GetExtension(Path.GetFileName(fileName));
 
-                    var fileName2 = Path.Combine(".", "UploadedFiles", fileDescriptionShort.Name + extension);
-
-                    //if (formFile == null)
-                    //{
-                    //    throw new ArgumentNullException(nameof(formFile));
-                    //}
+                    var fileName2 = Path.Combine(".", "UploadedFiles", fileName);
 
                     using var fileStream = new FileStream(fileName2, FileMode.Create);
                     var inputStream = file.OpenReadStream();
@@ -70,14 +60,18 @@ namespace AssistantBot.Controllers
 
                     uploadedFilePath = fileName2;
                 }
+
+                if (string.IsNullOrEmpty(uploadedFilePath))
+                    throw new Exception("No file was uploaded.");
+
+                _ = Task.Run(() => _service.LoadFileToKnowledgeBase(uploadedFilePath), CancellationToken.None);
+
+                return Ok(uploadedFilePath);
             }
-
-            if(string.IsNullOrEmpty(uploadedFilePath))
-                throw new Exception("No file was uploaded.");
-
-            _ = Task.Run(() => _service.LoadFileToKnowledgeBase(uploadedFilePath), CancellationToken.None);
-
-            return Ok(uploadedFilePath);
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("GetDocumentProcessingStatus")]
