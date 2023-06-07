@@ -31,7 +31,7 @@ namespace AssistantBot.Services
                 return "Empty text.";
             }
 
-            var questionEmbedding = await _chatBotService.GetEmbedding(question);
+            var questionEmbedding = await _chatBotService.GetEmbedding(question, ignoreCache: true);
 
             var knowledgeBaseTopResults = _indexedVectorStorage.SearchDataBySimilarVector<ParagraphWithPage>(
                 new EmbeddedTextVector

@@ -7,13 +7,20 @@ namespace AssistantBot.Services.Cache
     {
         private readonly string _path;
 
-        public InDiskCache(string path)
+        public InDiskCache()
         {
-            _path = path;
+            _path = Path.Combine(".", "Cache", "embeddings.json");
         }
 
         public async Task<T> LoadAsync()
         {
+            var directoryName = Path.GetDirectoryName(_path);
+            if (Directory.Exists(directoryName) == false)
+                Directory.CreateDirectory(directoryName);
+            
+            if (!File.Exists(_path))
+                return Activator.CreateInstance<T>();
+
             var data = await File.ReadAllTextAsync(_path);
             return JsonConvert.DeserializeObject<T>(data) ?? Activator.CreateInstance<T>();
         }

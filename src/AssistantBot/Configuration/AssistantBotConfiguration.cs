@@ -12,6 +12,8 @@ namespace AssistantBot.Configuration
         }
 
         public string CustomCacheUrl => _options.Value.CustomCacheUrl;
+
+        public string DemoUrl => _options.Value.DemoUrl;
     }
 
     public class AssistantBotConfigurationOptions
@@ -19,8 +21,10 @@ namespace AssistantBot.Configuration
         public AssistantBotConfigurationOptions()
         {
             CustomCacheUrl = "localhost";
+            DemoUrl = "";
         }
 
         public string CustomCacheUrl { get; set; }
+        public string DemoUrl { get; set; }
     }
 }

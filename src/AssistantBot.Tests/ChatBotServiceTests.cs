@@ -1,6 +1,7 @@
 using AssistantBot.Services.Factories;
 using AssistantBot.Common.Interfaces;
 using Xunit.Abstractions;
+using AssistantBot.Services.Cache;
 
 namespace AssistantBot.Tests
 {
@@ -12,7 +13,8 @@ namespace AssistantBot.Tests
 
         public ChatBotServiceTests(ITestOutputHelper output)
         {
-            _service = new ChatBotServiceFactory().CreateService(ChatBotServiceOption.ChatGpt);
+            _service = new ChatBotServiceFactory(new InDiskCache<Dictionary<string, double[]>>())
+                .CreateService(ChatBotServiceOption.ChatGpt);
 
             _output = output;
         }

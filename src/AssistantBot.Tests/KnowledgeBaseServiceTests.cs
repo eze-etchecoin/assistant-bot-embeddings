@@ -1,6 +1,7 @@
 ﻿using AssistantBot.Common.DataTypes;
 using AssistantBot.Configuration;
 using AssistantBot.Services;
+using AssistantBot.Services.Cache;
 using AssistantBot.Services.Factories;
 using AssistantBot.Services.Integrations;
 using Microsoft.Extensions.Options;
@@ -17,7 +18,9 @@ namespace AssistantBot.Tests
         {
             _outputHelper = outputHelper;
             _service = new KnowledgeBaseService(
-                new ChatBotServiceFactory().CreateService(ChatBotServiceOption.ChatGpt),
+                new ChatBotServiceFactory(new InDiskCache<Dictionary<string, double[]>>())
+                    .CreateService(ChatBotServiceOption.ChatGpt),
+
                 //new RedisVectorStorageService<EmbeddedTextVector>("localhost:6379")
                 new CustomMemoryStorageService<EmbeddedTextVector>(
                     new AssistantBotConfiguration(
