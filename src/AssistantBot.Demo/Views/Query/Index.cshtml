@@ -5,11 +5,28 @@
 
 
 <div id="vueContainer">
-    <p>Ingrese una pregunta:</p>
-    <input type="text" v-model="Texto" class="text-input" style="border: 1px solid #ccc; padding: 5px ;margin-bottom: 10px;" />
-    <p>El texto que se ingreso es: {{Texto}}</p>
-    <div>
-        <button>Enviar</button>
-    </div>
+    <p>Ingrese su consulta:</p>
+    
+    <textarea input type="text" v-model="Texto" class="text-input" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 10px;"></textarea>
 
+    <div>
+        
+        <button v-on:click="consultar" v-bind:disabled="isButtonDisabled">Consultar</button>
+    </div>
+    <div v-if="mostrarRespuesta" class="row">
+        <div class="col-3">
+            <br />
+            <p>Respuesta:</p>
+            <div class="alert alert-info">
+                <p>{{ textoIngresado }}</p>
+            </div>
+        </div>
+    </div>
+    
+
+
+    <div >
+        
+        
+    </div>
 </div>
