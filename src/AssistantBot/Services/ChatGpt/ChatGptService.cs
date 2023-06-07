@@ -61,13 +61,16 @@ namespace AssistantBot.Services.ChatGpt
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<double>> GetEmbedding(string textToTransform)
+        public async Task<IEnumerable<double>> GetEmbedding(string textToTransform, bool ignoreCache = false)
         {
             var cachedEmbeddings = await _embeddingsDiskCache.LoadAsync();
 
-            if (cachedEmbeddings.TryGetValue(textToTransform, out var cachedEmbedding))
+            if (!ignoreCache)
             {
-                return cachedEmbedding;
+                if (cachedEmbeddings.TryGetValue(textToTransform, out var cachedEmbedding))
+                {
+                    return cachedEmbedding;
+                }
             }
 
             var restSharpHelper = new RestSharpJsonHelper<EmbeddingsRequestModel, EmbeddingsResponseModel>(_client);
@@ -84,8 +87,11 @@ namespace AssistantBot.Services.ChatGpt
 
             var embedding = embeddingsResponse.Data.First().Embedding;
 
-            cachedEmbeddings[textToTransform] = embedding.ToArray();
-            await _embeddingsDiskCache.SaveAsync(cachedEmbeddings);
+            if (!ignoreCache)
+            {
+                cachedEmbeddings[textToTransform] = embedding.ToArray();
+                await _embeddingsDiskCache.SaveAsync(cachedEmbeddings);
+            }
 
             return embedding;
         }

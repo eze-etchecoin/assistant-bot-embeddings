@@ -8,9 +8,6 @@ if(builder.Environment.IsDevelopment())
     mvcBuilder.AddRazorRuntimeCompilation();
 }
 
-//var apiUrl = builder.Configuration["ApiUrl"];
-//builder.Services.AddSingleton<IRestClient, RestClient>(sp => new RestClient(apiUrl));
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

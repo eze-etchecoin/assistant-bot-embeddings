@@ -13,7 +13,7 @@ namespace AssistantBot.Configuration
 
         public string CustomCacheUrl => _options.Value.CustomCacheUrl;
 
-        //public string EmbeddingsCacheFilePath => _options.Value.EmbeddingsCacheFilePath;
+        public string DemoUrl => _options.Value.DemoUrl;
     }
 
     public class AssistantBotConfigurationOptions
@@ -21,10 +21,10 @@ namespace AssistantBot.Configuration
         public AssistantBotConfigurationOptions()
         {
             CustomCacheUrl = "localhost";
-            //EmbeddingsCacheFilePath = "embeddings.json";
+            DemoUrl = "";
         }
 
         public string CustomCacheUrl { get; set; }
-        //public string EmbeddingsCacheFilePath { get; set; }
+        public string DemoUrl { get; set; }
     }
 }

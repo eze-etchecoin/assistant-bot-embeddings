@@ -1,4 +1,5 @@
 ﻿using AssistantBot.Common.DataTypes;
+using AssistantBot.Common.Exceptions;
 using AssistantBot.Common.Interfaces;
 using AssistantBot.Models.KnowledgeBase;
 using AssistantBot.Services;
@@ -52,7 +53,16 @@ namespace AssistantBot.Controllers
 
                     var extension = Path.GetExtension(Path.GetFileName(fileName));
 
+                    var validExtensions = new List<string>{ ".pdf", ".docx", ".doc" };
+                    if (!validExtensions.Contains(extension.ToLower()))
+                        throw new AssistantBotException("Invalid file extension.");
+
                     var fileName2 = Path.Combine(".", "UploadedFiles", fileName);
+
+                    if (System.IO.File.Exists(fileName2))
+                    {
+                        throw new AssistantBotException("File already exists.");
+                    }
 
                     using var fileStream = new FileStream(fileName2, FileMode.Create);
                     var inputStream = file.OpenReadStream();
