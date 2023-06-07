@@ -2,10 +2,14 @@ const { createApp } = Vue;
 const vm = createApp({
     data() {
         return {
-            FileName: "",
+            LastUploadedFileInfo: null,
+            CurrentProcessFileName: "",
             ErrorMessage: "",
 
-            TestMessage: ""
+            CurrentProgress: 0,
+            ProgressCheckInterval: null,
+
+            /*TestMessage: ""*/
         }
     },
 
@@ -30,20 +34,53 @@ const vm = createApp({
                         headers: { "Content-Type": "multipart/form-data" }
                     });
 
-                this.FileName = data;
+                this.CurrentProcessFileName = data;
+
+                await this.startCheckProgress();
             }
             catch (error) {
-                this.ErrorMessage = error.response || error.message;
+                this.ErrorMessage = error.response?.data || error.message;
             }
         },
 
-        GetTestFromApi: async function () {
-            try {
-                const { data } = await axios.get(`${ApiUrl}/KnowledgeBase/Test`);
-                this.TestMessage = data;
-            }
-            catch (error) {
-                this.TestMessage = error.response || error.message;
+        async startCheckProgress() {
+
+            if (!this.CurrentProcessFileName)
+                return;
+
+            this.ProgressCheckInterval = setInterval(async () => {
+                try {
+                    const { data } = await axios.get(`${ApiUrl}/KnowledgeBase/CheckProgress?fileName=${this.CurrentProcessFileName}`);
+                    this.CurrentProgress = data;
+                }
+                catch (error) {
+                    this.ErrorMessage = error.response?.data || error.message;
+                }
+            }, 1000);
+        }
+
+        //GetTestFromApi: async function () {
+        //    try {
+        //        const { data } = await axios.get(`${ApiUrl}/KnowledgeBase/Test`);
+        //        this.TestMessage = data;
+        //    }
+        //    catch (error) {
+        //        this.TestMessage = error.response || error.message;
+        //    }
+        //}
+    },
+
+    computed: {
+        ProgressBarStyle() {
+            return `width: ${this.CurrentProgress}%;`;
+        }
+    },
+
+    watch: {
+        CurrentProgress() {
+            if (this.CurrentProgress >= 100) {
+                clearInterval(this.ProgressCheckInterval);
+                this.ProgressCheckInterval = null;
             }
         }
     }
