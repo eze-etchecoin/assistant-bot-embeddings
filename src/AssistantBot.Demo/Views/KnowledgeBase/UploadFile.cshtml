@@ -37,4 +37,19 @@
             </div>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-3">
+            <button type="button" class="btn btn-info" v-on:click="GetTestFromApi">
+                Test
+            </button>
+        </div>
+    </div>
+    <div class="row" v-if="TestMessage">
+        <div class="col-4">
+            <div class="alert alert-info">
+                {{TestMessage}}
+            </div>
+        </div>
+    </div>
 </div>

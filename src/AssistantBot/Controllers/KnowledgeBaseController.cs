@@ -92,6 +92,13 @@ namespace AssistantBot.Controllers
             return Ok(progress);
         }
 
+        [HttpGet("Test")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        public IActionResult Test()
+        {
+            return Ok("Hello from API!");
+        }
+
         public class FileDescriptionShort
         {
             public int Id { get; set; }
