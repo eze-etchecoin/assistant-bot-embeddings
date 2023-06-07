@@ -70,8 +70,9 @@ namespace AssistantBot.Common.Helpers
                 {
                     // remove only first and last quotes from content
                     string content = restResponse.Content;
-                    content = content.Remove(0, 1);
-                    content = content.Remove(content.Length - 1, 1);
+                    content = content.Trim('"');
+                    //content = content.Remove(0, 1);
+                    //content = content.Remove(content.Length - 1, 1);
                     content = content.Replace("\\", "");
                     return (TResponse)(object)content;
                 }

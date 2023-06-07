@@ -1,0 +1,40 @@
+﻿@section Scripts{
+    <script src="~/js/VueModels/KnowledgeBase/UploadFile.js"></script>
+}
+
+<div id="vueContainer">
+    <form id="uploadFileForm">
+        <div class="row">
+            <div class="col-6 form-group">
+                <label for="fileInput">Seleccione archivo para subir (sólo PDF/DOC/DOCX):</label>
+                <input type="file" id="fileInput" class="form-control-file" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3">
+                <button type="button" class="btn btn-primary" v-on:click="uploadFile" v-bind:disabled="UploadButtonDisabled">
+                    Subir
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <div class="row" v-if="ErrorMessage">
+        <div class="col-4">
+            <div class="alert alert-danger alert-dismissible">
+                {{ErrorMessage}}
+                <button type="button" class="btn-close" aria-label="Close" v-on:click="ErrorMessage = ''">
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-4">
+            <div class="alert alert-info">
+                <span v-if="!FileName">Aún no se ha subido archivo.</span>
+                <span v-else>Último archivo subido: <strong>{{ FileName }}</strong></span>
+            </div>
+        </div>
+    </div>
+</div>

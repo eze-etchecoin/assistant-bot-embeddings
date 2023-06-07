@@ -17,11 +17,11 @@ namespace AssistantBot.Services.ChatGpt
         private readonly RestClient _client;
         private readonly InDiskCache<Dictionary<string, double[]>> _embeddingsDiskCache;
 
-        public ChatGptService(string apiKey)
+        public ChatGptService(string apiKey, InDiskCache<Dictionary<string, double[]>> inDiskCache)
         {
             _apiKey = apiKey;
             _client = new RestClient(BaseUrl);
-            _embeddingsDiskCache = new InDiskCache<Dictionary<string, double[]>>("embeddings.json");
+            _embeddingsDiskCache = inDiskCache;
         }
 
         public async Task<string> SendMessage(string message)
@@ -61,8 +61,18 @@ namespace AssistantBot.Services.ChatGpt
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<double>> GetEmbedding(string textToTransform)
+        public async Task<IEnumerable<double>> GetEmbedding(string textToTransform, bool ignoreCache = false)
         {
+            var cachedEmbeddings = await _embeddingsDiskCache.LoadAsync();
+
+            if (!ignoreCache)
+            {
+                if (cachedEmbeddings.TryGetValue(textToTransform, out var cachedEmbedding))
+                {
+                    return cachedEmbedding;
+                }
+            }
+
             var restSharpHelper = new RestSharpJsonHelper<EmbeddingsRequestModel, EmbeddingsResponseModel>(_client);
 
             var embeddingsResponse = await restSharpHelper.ExecuteRequestAsync(
@@ -75,7 +85,15 @@ namespace AssistantBot.Services.ChatGpt
                 },
                 headers: new[] { AuthorizationHeader });
 
-            return embeddingsResponse.Data.First().Embedding;
+            var embedding = embeddingsResponse.Data.First().Embedding;
+
+            if (!ignoreCache)
+            {
+                cachedEmbeddings[textToTransform] = embedding.ToArray();
+                await _embeddingsDiskCache.SaveAsync(cachedEmbeddings);
+            }
+
+            return embedding;
         }
 
         private (string, string) AuthorizationHeader => ("Authorization", $"Bearer {_apiKey}");
