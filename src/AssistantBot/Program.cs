@@ -53,6 +53,8 @@ app.MapControllers();
 
 app.UseStaticFiles();
 
+app.UseCors();
+
 await EmbeddingsDiskCacheInitializer.LoadEmbeddingsIntoCache(app.Services);
 
 app.Run();
