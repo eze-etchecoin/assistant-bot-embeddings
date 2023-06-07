@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssistantBot.CustomCache", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssistantBot.Common", "AssistantBot.Common\AssistantBot.Common.csproj", "{5355BA6C-9486-4392-8E84-DCAA1ED78BC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssistantBot.Demo", "AssistantBot.Demo\AssistantBot.Demo.csproj", "{9F7E1B18-B643-4DDF-9AAB-28D64DD254DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssistantBot.Demo", "AssistantBot.Demo\AssistantBot.Demo.csproj", "{9F7E1B18-B643-4DDF-9AAB-28D64DD254DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
