@@ -27,6 +27,20 @@ createApp({
             this.textoIngresado = this.Texto;
             this.Texto = "";
 
+            /* // PETICIÓN A LA API
+
+            const dataObject = {
+                Question: this.Texto
+            };
+
+            const { data } = axios.post(
+                `${ApiUrl}/AssistantBot/AskToKnowledgeBase`,
+                dataObject);
+
+            this.textoIngresado = data;
+            this.mostrarRespuesta = true;
+
+            */
         },
         
     }

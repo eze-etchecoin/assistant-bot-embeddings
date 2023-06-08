@@ -81,5 +81,16 @@ namespace AssistantBot.Services
         {
             throw new NotImplementedException();
         }
+
+        internal KnowledgeBaseFileInfo? GetLastUploadedFileInfo()
+        {
+            if (!_documents.Any())
+                return null;
+
+            return _documents
+                .OrderBy(x => x.Value.UploadedDateTime)
+                .LastOrDefault()
+                .Value;
+        }
     }
 }

@@ -39,13 +39,14 @@ namespace AssistantBot.Controllers
 
         [HttpPost("UploadFile")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
-        //[ServiceFilter(typeof(ValidateMimeMultipartContentFilter))]
         public IActionResult UploadFile(IFormFile file)
         {
             try
             {
                 var fileName = "";
                 var uploadedFilePath = "";
+
+                Thread.Sleep(10_000);
 
                 if (file.Length > 0)
                 {
@@ -98,6 +99,14 @@ namespace AssistantBot.Controllers
         public IActionResult GetKnowledgeBaseFileInfo(string fileName)
         {
             var fileInfo = _service.GetKnowledgeBaseFileInfo(fileName);
+            return Ok(fileInfo);
+        }
+
+        [HttpGet("GetLastUploadedFileInfo")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(KnowledgeBaseFileInfo))]
+        public IActionResult GetLastUploadedFileInfo()
+        {
+            var fileInfo = _service.GetLastUploadedFileInfo();
             return Ok(fileInfo);
         }
 
