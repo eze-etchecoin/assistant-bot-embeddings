@@ -1,8 +1,8 @@
 ﻿using AssistantBot.Common.DataTypes;
 using AssistantBot.Common.Interfaces;
 using AssistantBot.Common.Exceptions;
-using AssistantBot.DocumentManagers;
 using AssistantBot.Services.DocumentConverter;
+using AssistantBot.Models.KnowledgeBase;
 
 namespace AssistantBot.Services
 {
@@ -11,7 +11,7 @@ namespace AssistantBot.Services
         private readonly IChatBotService _chatBotService;
         private readonly IIndexedVectorStorage<EmbeddedTextVector> _indexedVectorStorage;
 
-        private Dictionary<string, (int,int)> _documentProcessingProgress = new Dictionary<string, (int,int)>();
+        private static Dictionary<string, KnowledgeBaseFileInfo> _documents;
 
         public KnowledgeBaseService(
             IChatBotService chatBotService,
@@ -19,6 +19,8 @@ namespace AssistantBot.Services
         {
             _chatBotService = chatBotService;
             _indexedVectorStorage = indexedVectorStorage;
+
+            _documents ??= new Dictionary<string, KnowledgeBaseFileInfo>();
         }
 
         public async Task<int> AddParagraphToKnowledgeBase(string paragraph)
@@ -38,7 +40,7 @@ namespace AssistantBot.Services
             return storedHash;
         }
 
-        public async Task LoadFileToKnowledgeBase(string filePath)
+        public async Task LoadFileToKnowledgeBase(string filePath, string fileName)
         {
             if(File.Exists(filePath) == false)
                 throw new AssistantBotException($"File {filePath} does not exist.");
@@ -47,9 +49,8 @@ namespace AssistantBot.Services
             var paragraphs = documentConverterService.GetParagraphsTextWithPageNumber(filePath);
 
             var totalParagraphs = paragraphs.Count();
-            var currentParagraph = 0;
 
-            _documentProcessingProgress[filePath] = (currentParagraph, totalParagraphs);
+            _documents[fileName] = new KnowledgeBaseFileInfo(fileName, totalParagraphs);
 
             foreach (var paragraph in paragraphs)
             {
@@ -62,18 +63,34 @@ namespace AssistantBot.Services
                     ParagraphWithPage = new ParagraphWithPage(paragraph.Page, paragraph.Text)
                 });
 
-                _documentProcessingProgress[filePath] = (++currentParagraph, totalParagraphs);
+                _documents[fileName].ProcessedParagraphs++;
             }
         }
 
-        public int GetDocumentProcessingStatus(string filePath)
+        public int GetDocumentProcessingStatus(string fileName)
         {
-            if (_documentProcessingProgress.ContainsKey(filePath) == false)
+            if (_documents.ContainsKey(fileName) == false)
                 return 0;
 
-            var (currentParagraph, totalParagraphs) = _documentProcessingProgress[filePath];
+            var docInfo = _documents[fileName];
 
-            return Convert.ToInt32((decimal)currentParagraph / totalParagraphs * 100);
+            return Convert.ToInt32((decimal)docInfo.ProcessedParagraphs / docInfo.TotalParagraphs * 100);
+        }
+
+        internal object GetKnowledgeBaseFileInfo(string fileName)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal KnowledgeBaseFileInfo? GetLastUploadedFileInfo()
+        {
+            if (!_documents.Any())
+                return null;
+
+            return _documents
+                .OrderBy(x => x.Value.UploadedDateTime)
+                .LastOrDefault()
+                .Value;
         }
     }
 }

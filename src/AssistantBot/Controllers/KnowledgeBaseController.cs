@@ -39,16 +39,18 @@ namespace AssistantBot.Controllers
 
         [HttpPost("UploadFile")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
-        //[ServiceFilter(typeof(ValidateMimeMultipartContentFilter))]
         public IActionResult UploadFile(IFormFile file)
         {
             try
             {
+                var fileName = "";
                 var uploadedFilePath = "";
+
+                Thread.Sleep(10_000);
 
                 if (file.Length > 0)
                 {
-                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition)
+                    fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition)
                         .FileName.ToString().Trim('"');
 
                     var extension = Path.GetExtension(Path.GetFileName(fileName));
@@ -74,9 +76,9 @@ namespace AssistantBot.Controllers
                 if (string.IsNullOrEmpty(uploadedFilePath))
                     throw new Exception("No file was uploaded.");
 
-                _ = Task.Run(() => _service.LoadFileToKnowledgeBase(uploadedFilePath), CancellationToken.None);
+                _ = Task.Run(() => _service.LoadFileToKnowledgeBase(uploadedFilePath, fileName), CancellationToken.None);
 
-                return Ok(uploadedFilePath);
+                return Ok(fileName);
             }
             catch(Exception ex)
             {
@@ -84,20 +86,35 @@ namespace AssistantBot.Controllers
             }
         }
 
-        [HttpGet("GetDocumentProcessingStatus")]
+        [HttpGet("CheckProgress")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(int))]
-        public IActionResult GetDocumentProcessingStatus(string filePath)
+        public IActionResult CheckProgress(string fileName)
         {
-            var progress = _service.GetDocumentProcessingStatus(filePath);
+            var progress = _service.GetDocumentProcessingStatus(fileName);
             return Ok(progress);
         }
 
-        public class FileDescriptionShort
+        [HttpGet("GetKnowledgeBaseFileInfo")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(KnowledgeBaseFileInfo))]
+        public IActionResult GetKnowledgeBaseFileInfo(string fileName)
         {
-            public int Id { get; set; }
-            public string Description { get; set; }
-            public string Name { get; set; }
-            public ICollection<IFormFile> File { get; set; }
+            var fileInfo = _service.GetKnowledgeBaseFileInfo(fileName);
+            return Ok(fileInfo);
         }
+
+        [HttpGet("GetLastUploadedFileInfo")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(KnowledgeBaseFileInfo))]
+        public IActionResult GetLastUploadedFileInfo()
+        {
+            var fileInfo = _service.GetLastUploadedFileInfo();
+            return Ok(fileInfo);
+        }
+
+        //[HttpGet("Test")]
+        //[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        //public IActionResult Test()
+        //{
+        //    return Ok("Hello from API!");
+        //}
     }
 }

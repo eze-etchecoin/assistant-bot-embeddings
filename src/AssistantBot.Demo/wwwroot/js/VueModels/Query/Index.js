@@ -32,6 +32,20 @@ createApp({
             setTimeout(this.showAlert, 3000);
         },
 
+            /* // PETICIÓN A LA API
+
+            const dataObject = {
+                Question: this.Texto
+            };
+
+            const { data } = axios.post(
+                `${ApiUrl}/AssistantBot/AskToKnowledgeBase`,
+                dataObject);
+
+            this.textoIngresado = data;
+            this.mostrarRespuesta = true;
+
+            */
         showAlert() {
             this.isLoading = false;
             this.mostrarRespuesta = true;

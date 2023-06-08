@@ -4,9 +4,9 @@
     {
         public static IServiceCollection ConfigureCors(this WebApplicationBuilder builder)
         {
-            var frontendUrl = builder.Configuration.GetSection("DemoUrl").Value;
-            if(string.IsNullOrEmpty(frontendUrl))
-                return builder.Services;
+            //var frontendUrl = builder.Configuration.GetSection("DemoUrl").Value;
+            //if(string.IsNullOrEmpty(frontendUrl))
+            //    return builder.Services;
             
             builder.Services.AddCors(opt =>
             {
