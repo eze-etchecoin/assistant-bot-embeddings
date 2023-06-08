@@ -46,7 +46,7 @@ namespace AssistantBot.Controllers
                 var fileName = "";
                 var uploadedFilePath = "";
 
-                Thread.Sleep(10_000);
+                Thread.Sleep(3_000);
 
                 if (file.Length > 0)
                 {

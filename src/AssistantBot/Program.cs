@@ -5,6 +5,7 @@ using AssistantBot.Services.Factories;
 using AssistantBot.Services.Integrations;
 using AssistantBot.Services.Cache;
 using AssistantBot.Configuration.Initializers;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +13,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.ConfigureCors();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.PropertyNamingPolicy = null;
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

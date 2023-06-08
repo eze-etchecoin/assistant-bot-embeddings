@@ -38,7 +38,7 @@ namespace AssistantBot.Services
                 {
                     Values = questionEmbedding.ToArray()
                 },
-                5);
+                10);
 
             if (!knowledgeBaseTopResults.Any())
                 throw new AssistantBotException("Error at question processing.");

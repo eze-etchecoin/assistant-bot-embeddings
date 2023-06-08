@@ -4,6 +4,7 @@ const vm = createApp({
         return {
             LastUploadedFileInfo: null,
             CurrentProcessFileName: "",
+            IsFileSelected: false,
             IsUploadingFile: false,
             ErrorMessage: "",
 
@@ -42,7 +43,7 @@ const vm = createApp({
                 await this.startCheckProgress();
             }
             catch (error) {
-                this.ErrorHandler(error);
+                this.errorHandler(error);
             }
             finally {
                 this.IsUploadingFile = false;
@@ -60,7 +61,7 @@ const vm = createApp({
                     this.CurrentProgress = data;
                 }
                 catch (error) {
-                    this.ErrorHandler(error);
+                    this.errorHandler(error);
                 }
             }, 1000);
         },
@@ -68,16 +69,31 @@ const vm = createApp({
         async getLastUploadedFileInfo() {
             try {
                 const { data } = await axios.get(`${ApiUrl}/KnowledgeBase/GetLastUploadedFileInfo`);
-                this.LastUploadedFileInfo = data;
+                if (data) {
+                    this.LastUploadedFileInfo = data;
+                }
+                else {
+                    this.LastUploadedFileInfo = null;
+                }
             }
             catch (error) {
-                this.ErrorHandler(error);
+                this.errorHandler(error);
             }
         },
 
-        ErrorHandler(error) {
+        errorHandler(error) {
             this.ErrorMessage = error.response?.data || error.message;
-        }
+        },
+
+        checkFileSelected(event) {
+            const input = event.target;
+            if ('files' in input && input.files.length > 0) {
+                this.IsFileSelected = true;
+            }
+            else {
+               this.IsFileSelected = false;
+            }
+        },
 
         //GetTestFromApi: async function () {
         //    try {
@@ -98,7 +114,15 @@ const vm = createApp({
             return this.IsUploadingFile;
         },
         DisabledUploadButton() {
-            return this.IsUploadingFile || this.CurrentProcessFileName && this.CurrentProgress < 100;
+            return !this.IsFileSelected ||
+                this.IsUploadingFile ||
+                this.CurrentProcessFileName !== "" && this.CurrentProgress < 100;
+        },
+        FormattedLastUploadedFileDateTime() {
+            if (!this.LastUploadedFileInfo)
+                return "";
+
+            return moment(this.LastUploadedFileInfo.UploadedDateTime).format("DD/MM/YYYY HH:mm:ss");
         }
     },
 
@@ -108,7 +132,13 @@ const vm = createApp({
                 clearInterval(this.ProgressCheckInterval);
                 this.ProgressCheckInterval = null;
                 this.CurrentProcessFileName = "";
+
+                this.getLastUploadedFileInfo();
             }
         }
+    },
+
+    async mounted() {
+        await this.getLastUploadedFileInfo();
     }
 }).mount('#vueContainer');

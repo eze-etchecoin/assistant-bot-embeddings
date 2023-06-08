@@ -20,3 +20,7 @@ body {
 .row{
     margin-bottom: 15px;
 }
+
+[v-cloak]{
+    display: none;
+}
