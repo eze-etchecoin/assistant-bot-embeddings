@@ -19,5 +19,14 @@
         public DateTimeOffset UploadedDateTime { get; set; }
         public int TotalParagraphs { get; set; }
         public int ProcessedParagraphs { get; set; }
+        public string? ErrorMessage { get; set; }
+
+        public int Progress
+        {
+            get => TotalParagraphs == 0 
+                ? 0 
+                : (int)Math.Round((double)ProcessedParagraphs / TotalParagraphs * 100);
+            set { }
+        }
     }
 }

@@ -4,6 +4,7 @@ const vm = createApp({
         return {
             LastUploadedFileInfo: null,
             CurrentProcessFileName: "",
+            CurrentProcessFileInfo: null,
             IsFileSelected: false,
             IsUploadingFile: false,
             ErrorMessage: "",
@@ -56,14 +57,19 @@ const vm = createApp({
                 return;
 
             this.ProgressCheckInterval = setInterval(async () => {
-                try {
-                    const { data } = await axios.get(`${ApiUrl}/KnowledgeBase/CheckProgress?fileName=${this.CurrentProcessFileName}`);
-                    this.CurrentProgress = data;
-                }
-                catch (error) {
-                    this.errorHandler(error);
-                }
+                this.CurrentProcessFileInfo = await this.getKnowledgeBaseFileInfo(this.CurrentProcessFileName);
+                this.CurrentProgress = this.CurrentProcessFileInfo.Progress;
             }, 1000);
+        },
+
+        async getKnowledgeBaseFileInfo(fileName) {
+            try {
+                const { data } = await axios.get(`${ApiUrl}/KnowledgeBase/GetKnowledgeBaseFileInfo?fileName=${fileName}`);
+                return data || null;
+            }
+            catch (error) {
+                this.errorHandler(error);
+            }
         },
 
         async getLastUploadedFileInfo() {
@@ -128,6 +134,13 @@ const vm = createApp({
 
     watch: {
         CurrentProgress() {
+
+            if (this.CurrentProcessFileInfo?.ErrorMessage) {
+                //clearInterval(this.ProgressCheckInterval);
+                //this.ProgressCheckInterval = null;
+                this.ErrorMessage = this.CurrentProcessFileInfo.ErrorMessage;
+            }
+
             if (this.CurrentProgress >= 100) {
                 clearInterval(this.ProgressCheckInterval);
                 this.ProgressCheckInterval = null;

@@ -54,32 +54,46 @@ namespace AssistantBot.Services
 
             foreach (var paragraph in paragraphs)
             {
-                var embedding = await _chatBotService.GetEmbedding(paragraph.Text)
+                try
+                {
+                    var embedding = await _chatBotService.GetEmbedding(paragraph.Text)
                     ?? throw new AssistantBotException("An error has ocurred getting the embedding for given text.");
 
-                var storedHash = _indexedVectorStorage.AddVector(new EmbeddedTextVector
+                    var storedHash = _indexedVectorStorage.AddVector(new EmbeddedTextVector
+                    {
+                        Values = embedding.ToArray(),
+                        ParagraphWithPage = new ParagraphWithPage(paragraph.Page, paragraph.Text)
+                    });
+                }
+                catch(Exception ex)
                 {
-                    Values = embedding.ToArray(),
-                    ParagraphWithPage = new ParagraphWithPage(paragraph.Page, paragraph.Text)
-                });
+                    _documents[fileName].ErrorMessage = $"An error has ocurred getting the embedding for given text: {ex.Message}";
+                }
 
                 _documents[fileName].ProcessedParagraphs++;
             }
         }
 
-        public int GetDocumentProcessingStatus(string fileName)
+        //public KnowledgeBaseFileInfo? GetDocumentProcessingStatus(string fileName)
+        //{
+        //    if (_documents.ContainsKey(fileName) == false)
+        //        return null;
+
+        //    var docInfo = _documents[fileName];
+
+        //    return docInfo;
+
+        //    //return Convert.ToInt32((decimal)docInfo.ProcessedParagraphs / docInfo.TotalParagraphs * 100);
+        //}
+
+        internal KnowledgeBaseFileInfo? GetKnowledgeBaseFileInfo(string fileName)
         {
             if (_documents.ContainsKey(fileName) == false)
-                return 0;
+                return null;
 
             var docInfo = _documents[fileName];
 
-            return Convert.ToInt32((decimal)docInfo.ProcessedParagraphs / docInfo.TotalParagraphs * 100);
-        }
-
-        internal object GetKnowledgeBaseFileInfo(string fileName)
-        {
-            throw new NotImplementedException();
+            return docInfo;
         }
 
         internal KnowledgeBaseFileInfo? GetLastUploadedFileInfo()
