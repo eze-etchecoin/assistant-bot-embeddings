@@ -13,7 +13,9 @@ createApp({
         return {
             Texto: "",
             textoIngresado: "",
-            mostrarRespuesta: false
+            mostrarRespuesta: false,
+            isLoading: false,
+
         };
     },
     computed: {
@@ -23,9 +25,11 @@ createApp({
     },
     methods: {
         consultar() {
-            this.mostrarRespuesta= true;
             this.textoIngresado = this.Texto;
             this.Texto = "";
+            this.mostrarRespuesta = false;
+            this.isLoading = true;
+            setTimeout(this.showAlert, 3000);
 
             /* // PETICIÓN A LA API
 
@@ -42,7 +46,16 @@ createApp({
 
             */
         },
-        
+
+            
+        showAlert() {
+            this.isLoading = false;
+            this.mostrarRespuesta = true;
+        },
+
+        closeAlert() {
+            this.mostrarRespuesta = false;   
+        }  
     }
 }).mount("#vueContainer");
 
