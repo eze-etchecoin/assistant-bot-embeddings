@@ -34,6 +34,9 @@ namespace AssistantBot.DocumentManagers
             var result = Enumerable.Empty<IParagraphWithPage>();
 
             var reader = new PdfReader(filePath);
+
+            IParagraphWithPage? lastResultParagraph = null;
+
             using (var document = new PdfDocument(reader))
             {
                 for (int page = 1; page <= document.GetNumberOfPages(); page++)
@@ -41,12 +44,32 @@ namespace AssistantBot.DocumentManagers
                     var strategy = new SimpleTextExtractionStrategy();
                     var text = PdfTextExtractor.GetTextFromPage(document.GetPage(page), strategy);
 
-                    var paragraphs = text.Split("\n").Select(p => new ParagraphWithPage(page, p) as IParagraphWithPage);
+                    var paragraphs = text
+                        .Replace("\n", "")
+                        .Split('.')
+                        .SelectMany(x => x.Split("  ")) // Split by double space.
+                        .Select(x => new ParagraphWithPage
+                        {
+                            Page = page,
+                            Text = x
+                        } as IParagraphWithPage);
+
+                    // Concatenate the first paragraph of the current page with the last added paragraph to result.
+                    if (page > 1)
+                    {
+                        var firstParagraph = paragraphs.FirstOrDefault();
+                        if (firstParagraph != null && lastResultParagraph != null)
+                        {
+                            lastResultParagraph.Text += firstParagraph.Text;
+                            paragraphs = paragraphs.Skip(1);
+                        }
+                    }
 
                     if (skipEmpty)
                         paragraphs = paragraphs.Where(x => !string.IsNullOrEmpty(x.Text.Trim()));
 
                     result = result.Concat(paragraphs).ToList();
+                    lastResultParagraph = result.LastOrDefault();
                 }
             }
 

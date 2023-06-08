@@ -2,7 +2,7 @@
 {
     public interface IParagraphWithPage
     {
-        string Text { get; }
-        int Page { get; }
+        string Text { get; set; }
+        int Page { get; set; }
     }
 }
