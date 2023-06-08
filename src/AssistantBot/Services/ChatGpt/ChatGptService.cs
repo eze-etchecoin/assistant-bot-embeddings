@@ -4,6 +4,7 @@ using AssistantBot.Common.Exceptions;
 using RestSharp;
 using AssistantBot.Common.Helpers;
 using AssistantBot.Services.Cache;
+using System.IO.Compression;
 
 namespace AssistantBot.Services.ChatGpt
 {
@@ -15,9 +16,9 @@ namespace AssistantBot.Services.ChatGpt
         private const string BaseUrl = "https://api.openai.com";
 
         private readonly RestClient _client;
-        private readonly InDiskCache<Dictionary<string, double[]>> _embeddingsDiskCache;
+        private readonly InDiskCache<Dictionary<string, byte[]>> _embeddingsDiskCache;
 
-        public ChatGptService(string apiKey, InDiskCache<Dictionary<string, double[]>> inDiskCache)
+        public ChatGptService(string apiKey, InDiskCache<Dictionary<string, byte[]>> inDiskCache)
         {
             _apiKey = apiKey;
             _client = new RestClient(BaseUrl);
@@ -69,7 +70,8 @@ namespace AssistantBot.Services.ChatGpt
             {
                 if (cachedEmbeddings.TryGetValue(textToTransform, out var cachedEmbedding))
                 {
-                    return cachedEmbedding;
+                    var uncompressedCachedEmbedding = CompressedByteToDoubleArray(cachedEmbedding);
+                    return uncompressedCachedEmbedding;
                 }
             }
 
@@ -89,7 +91,7 @@ namespace AssistantBot.Services.ChatGpt
 
             if (!ignoreCache)
             {
-                cachedEmbeddings[textToTransform] = embedding.ToArray();
+                cachedEmbeddings[textToTransform] = DoubleArrayToCompressedByte(embedding.ToArray());
                 await _embeddingsDiskCache.SaveAsync(cachedEmbeddings);
             }
 
@@ -97,6 +99,31 @@ namespace AssistantBot.Services.ChatGpt
         }
 
         private (string, string) AuthorizationHeader => ("Authorization", $"Bearer {_apiKey}");
+
+        private static byte[] DoubleArrayToCompressedByte(double[] doubleArray)
+        {
+            using var memoryStream = new MemoryStream();
+            using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress))
+            using (var binaryWriter = new BinaryWriter(gZipStream))
+            {
+                for (int i = 0; i < doubleArray.Length; i++)
+                    binaryWriter.Write(doubleArray[i]);
+            }
+            return memoryStream.ToArray();
+        }
+
+        private static double[] CompressedByteToDoubleArray(byte[] compressedByte)
+        {
+            var doubleList = new List<double>();
+            using (var memoryStream = new MemoryStream(compressedByte))
+            {
+                using var gZipStream = new GZipStream(memoryStream, CompressionMode.Decompress);
+                using var binaryReader = new BinaryReader(gZipStream);
+                while (gZipStream.Position < gZipStream.Length)
+                    doubleList.Add(binaryReader.ReadDouble());
+            }
+            return doubleList.ToArray();
+        }
 
     }
 }

@@ -18,7 +18,7 @@ namespace AssistantBot.Tests
         {
             _outputHelper = outputHelper;
             _service = new KnowledgeBaseService(
-                new ChatBotServiceFactory(new InDiskCache<Dictionary<string, double[]>>())
+                new ChatBotServiceFactory(new InDiskCache<Dictionary<string, byte[]>>())
                     .CreateService(ChatBotServiceOption.ChatGpt),
 
                 //new RedisVectorStorageService<EmbeddedTextVector>("localhost:6379")
