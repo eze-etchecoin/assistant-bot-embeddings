@@ -30,7 +30,6 @@ createApp({
             this.mostrarRespuesta = false;
             this.isLoading = true;
             setTimeout(this.showAlert, 3000);
-        },
 
             /* // PETICIÓN A LA API
 
@@ -46,6 +45,9 @@ createApp({
             this.mostrarRespuesta = true;
 
             */
+        },
+
+            
         showAlert() {
             this.isLoading = false;
             this.mostrarRespuesta = true;
