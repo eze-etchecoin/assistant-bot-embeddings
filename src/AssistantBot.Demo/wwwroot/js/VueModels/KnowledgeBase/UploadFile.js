@@ -4,6 +4,7 @@ const vm = createApp({
         return {
             LastUploadedFileInfo: null,
             CurrentProcessFileName: "",
+            IsUploadingFile: false,
             ErrorMessage: "",
 
             CurrentProgress: 0,
@@ -26,6 +27,8 @@ const vm = createApp({
             const formData = new FormData();
             formData.append("file", file);
 
+            this.IsUploadingFile = true;
+
             try {
                 const { data } = await axios.post(
                     `${ApiUrl}/KnowledgeBase/UploadFile`,
@@ -39,7 +42,10 @@ const vm = createApp({
                 await this.startCheckProgress();
             }
             catch (error) {
-                this.ErrorMessage = error.response?.data || error.message;
+                this.ErrorHandler(error);
+            }
+            finally {
+                this.IsUploadingFile = false;
             }
         },
 
@@ -54,9 +60,23 @@ const vm = createApp({
                     this.CurrentProgress = data;
                 }
                 catch (error) {
-                    this.ErrorMessage = error.response?.data || error.message;
+                    this.ErrorHandler(error);
                 }
             }, 1000);
+        },
+
+        async getLastUploadedFileInfo() {
+            try {
+                const { data } = await axios.get(`${ApiUrl}/KnowledgeBase/GetLastUploadedFileInfo`);
+                this.LastUploadedFileInfo = data;
+            }
+            catch (error) {
+                this.ErrorHandler(error);
+            }
+        },
+
+        ErrorHandler(error) {
+            this.ErrorMessage = error.response?.data || error.message;
         }
 
         //GetTestFromApi: async function () {
@@ -73,6 +93,12 @@ const vm = createApp({
     computed: {
         ProgressBarStyle() {
             return `width: ${this.CurrentProgress}%;`;
+        },
+        ShowsUploadSpinner() {
+            return this.IsUploadingFile;
+        },
+        DisabledUploadButton() {
+            return this.IsUploadingFile || this.CurrentProcessFileName && this.CurrentProgress < 100;
         }
     },
 
@@ -81,6 +107,7 @@ const vm = createApp({
             if (this.CurrentProgress >= 100) {
                 clearInterval(this.ProgressCheckInterval);
                 this.ProgressCheckInterval = null;
+                this.CurrentProcessFileName = "";
             }
         }
     }

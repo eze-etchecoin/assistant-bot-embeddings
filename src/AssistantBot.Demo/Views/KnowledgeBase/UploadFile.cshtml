@@ -12,9 +12,12 @@
         </div>
         <div class="row">
             <div class="col-3">
-                <button type="button" class="btn btn-primary" v-on:click="uploadFile" v-bind:disabled="UploadButtonDisabled">
+                <button type="button" class="btn btn-primary" v-on:click="uploadFile" @*v-bind:disabled="DisabledUploadButton"*@>
                     Subir
                 </button>
+                <div class="spinner-border text-primary" role="status" v-if="ShowsUploadSpinner">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
             </div>
         </div>
     </form>
@@ -43,7 +46,10 @@
         <div class="col-4">
             <div class="alert alert-info">
                 <span v-if="!LastUploadedFileInfo">No hay información del último archivo subido.</span>
-                @*<span v-else>Último archivo subido: <strong>{{ FileName }}</strong></span>*@
+                <span v-else>
+                    Último archivo subido: 
+                    <strong>{{ LastUploadedFileInfo.FileName }} - {{ LastUploadedFileInfo.UploadedDateTime }}</strong>
+                </span>
             </div>
         </div>
     </div>
