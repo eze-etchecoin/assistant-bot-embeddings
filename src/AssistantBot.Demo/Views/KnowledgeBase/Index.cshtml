@@ -17,12 +17,14 @@
         </div>
     </div>
 
-    <div v-if="showingAlert" class="row">
+    <div v-if="showingAlert" class="row">     
         <div class="col-3">
-            <div class="alert alert-success">
-                <p>
+            <div class="alert alert-success alert-dismissible">
+                
+                    <button type="button" class="btn-close" aria-label="Close" v-on:click="hidenAlert"></button>
+                                             
                     El texto ha sido guardado con éxito
-                </p>
+                
             </div>
         </div>
     </div>

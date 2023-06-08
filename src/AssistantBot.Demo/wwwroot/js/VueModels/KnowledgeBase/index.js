@@ -22,9 +22,11 @@ createApp({
         showAlert() {
             this.isLoading = false;
             this.showingAlert = true;
-        }
+        },
 
-        
+        hidenAlert() {
+            this.showingAlert = false;
+        }
 
     },
     computed: {
