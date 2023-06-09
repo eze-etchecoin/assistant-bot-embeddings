@@ -15,7 +15,6 @@ createApp({
             textoIngresado: "",
             mostrarRespuesta: false,
             isLoading: false,
-
         };
     },
     computed: {
@@ -24,34 +23,32 @@ createApp({
         }
     },
     methods: {
-        consultar() {
-            this.textoIngresado = this.Texto;
-            this.Texto = "";
+        async consultar() {
+            //this.textoIngresado = this.Texto;
+            //this.Texto = "";
             this.mostrarRespuesta = false;
             this.isLoading = true;
-            setTimeout(this.showAlert, 3000);
+            /*setTimeout(this.showAlert, 3000);*/
 
-            /* // PETICIÓN A LA API
+             // PETICIÓN A LA API
 
             const dataObject = {
                 Question: this.Texto
             };
 
-            const { data } = axios.post(
+            const { data } = await axios.post(
                 `${ApiUrl}/AssistantBot/AskToKnowledgeBase`,
                 dataObject);
 
-            this.textoIngresado = data;
-            this.mostrarRespuesta = true;
-
-            */
-        },
-
-            
-        showAlert() {
             this.isLoading = false;
-            this.mostrarRespuesta = true;
+            this.textoIngresado = data;
+            this.mostrarRespuesta = true;    
         },
+
+        //showAlert() {
+        //    this.isLoading = false;
+        //    this.mostrarRespuesta = true;
+        //},
 
         closeAlert() {
             this.mostrarRespuesta = false;   
