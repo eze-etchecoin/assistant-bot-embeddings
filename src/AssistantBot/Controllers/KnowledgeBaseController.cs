@@ -46,7 +46,8 @@ namespace AssistantBot.Controllers
                 var fileName = "";
                 var uploadedFilePath = "";
 
-                Thread.Sleep(10_000);
+                // This is for debugging purposes only.
+                //Thread.Sleep(3_000);
 
                 if (file.Length > 0)
                 {
@@ -86,13 +87,13 @@ namespace AssistantBot.Controllers
             }
         }
 
-        [HttpGet("CheckProgress")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(int))]
-        public IActionResult CheckProgress(string fileName)
-        {
-            var progress = _service.GetDocumentProcessingStatus(fileName);
-            return Ok(progress);
-        }
+        //[HttpGet("CheckProgress")]
+        //[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(KnowledgeBaseFileInfo))]
+        //public IActionResult CheckProgress(string fileName)
+        //{
+        //    var progress = _service.GetDocumentProcessingStatus(fileName);
+        //    return Ok(progress);
+        //}
 
         [HttpGet("GetKnowledgeBaseFileInfo")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(KnowledgeBaseFileInfo))]

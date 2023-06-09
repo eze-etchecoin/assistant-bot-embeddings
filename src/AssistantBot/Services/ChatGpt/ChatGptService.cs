@@ -4,6 +4,8 @@ using AssistantBot.Common.Exceptions;
 using RestSharp;
 using AssistantBot.Common.Helpers;
 using AssistantBot.Services.Cache;
+using System.IO.Compression;
+using AssistantBot.Utils;
 
 namespace AssistantBot.Services.ChatGpt
 {
@@ -15,9 +17,9 @@ namespace AssistantBot.Services.ChatGpt
         private const string BaseUrl = "https://api.openai.com";
 
         private readonly RestClient _client;
-        private readonly InDiskCache<Dictionary<string, double[]>> _embeddingsDiskCache;
+        private readonly InDiskCache<Dictionary<string, byte[]>> _embeddingsDiskCache;
 
-        public ChatGptService(string apiKey, InDiskCache<Dictionary<string, double[]>> inDiskCache)
+        public ChatGptService(string apiKey, InDiskCache<Dictionary<string, byte[]>> inDiskCache)
         {
             _apiKey = apiKey;
             _client = new RestClient(BaseUrl);
@@ -69,7 +71,8 @@ namespace AssistantBot.Services.ChatGpt
             {
                 if (cachedEmbeddings.TryGetValue(textToTransform, out var cachedEmbedding))
                 {
-                    return cachedEmbedding;
+                    var uncompressedCachedEmbedding = CompressedDataHelper.CompressedByteToDoubleArray(cachedEmbedding);
+                    return uncompressedCachedEmbedding;
                 }
             }
 
@@ -89,7 +92,7 @@ namespace AssistantBot.Services.ChatGpt
 
             if (!ignoreCache)
             {
-                cachedEmbeddings[textToTransform] = embedding.ToArray();
+                cachedEmbeddings[textToTransform] = CompressedDataHelper.DoubleArrayToCompressedByte(embedding.ToArray());
                 await _embeddingsDiskCache.SaveAsync(cachedEmbeddings);
             }
 
@@ -97,6 +100,5 @@ namespace AssistantBot.Services.ChatGpt
         }
 
         private (string, string) AuthorizationHeader => ("Authorization", $"Bearer {_apiKey}");
-
     }
 }

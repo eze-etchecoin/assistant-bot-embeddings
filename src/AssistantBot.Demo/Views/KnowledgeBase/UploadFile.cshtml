@@ -2,21 +2,23 @@
     <script src="~/js/VueModels/KnowledgeBase/UploadFile.js"></script>
 }
 
-<div id="vueContainer">
+<div id="vueContainer" v-cloak>
     <form id="uploadFileForm">
         <div class="row">
             <div class="col-6 form-group">
-                <label for="fileInput">Seleccione archivo para subir (sólo PDF/DOC/DOCX):</label>
-                <input type="file" id="fileInput" class="form-control-file" />
+                <label>Seleccione archivo para subir (sólo PDF/DOC/DOCX):</label>
+                <input type="file" id="fileInput" class="form-control-file" v-on:change="checkFileSelected" />
             </div>
         </div>
         <div class="row">
-            <div class="col-3">
-                <button type="button" class="btn btn-primary" v-on:click="uploadFile" @*v-bind:disabled="DisabledUploadButton"*@>
+            <div class="col-2 d-flex align-items-center">
+                <button type="button" class="btn btn-primary" v-on:click="uploadFile" v-bind:disabled="DisabledUploadButton">
                     Subir
                 </button>
-                <div class="spinner-border text-primary" role="status" v-if="ShowsUploadSpinner">
-                    <span class="visually-hidden">Loading...</span>
+                <div class="ms-3">
+                    <div class="spinner-border text-primary" role="status" v-if="ShowsUploadSpinner">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -47,8 +49,9 @@
             <div class="alert alert-info">
                 <span v-if="!LastUploadedFileInfo">No hay información del último archivo subido.</span>
                 <span v-else>
-                    Último archivo subido: 
-                    <strong>{{ LastUploadedFileInfo.FileName }} - {{ LastUploadedFileInfo.UploadedDateTime }}</strong>
+                    Último archivo subido: <br />
+                    <strong>{{ LastUploadedFileInfo.FileName }}</strong><br/>
+                    {{ FormattedLastUploadedFileDateTime }}
                 </span>
             </div>
         </div>

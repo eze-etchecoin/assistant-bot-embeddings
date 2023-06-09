@@ -5,6 +5,7 @@ using AssistantBot.Services.Factories;
 using AssistantBot.Services.Integrations;
 using AssistantBot.Services.Cache;
 using AssistantBot.Configuration.Initializers;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +13,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.ConfigureCors();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.PropertyNamingPolicy = null;
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -22,12 +27,12 @@ builder.Services.Configure<AssistantBotConfigurationOptions>(
     builder.Configuration.GetSection("AssistantBotOptions"));
 
 // InDiskCache is instanciated.
-builder.Services.AddSingleton<InDiskCache<Dictionary<string, double[]>>>();
+builder.Services.AddSingleton<InDiskCache<Dictionary<string, byte[]>>>();
 
 // ChatGptService is instanciated.
 var openAiApiKey = Environment.GetEnvironmentVariable(StartupEnvironmentVariables.OpenAIApiKey) ?? "NO_KEY";
 builder.Services.AddSingleton(sp => 
-    new ChatBotServiceFactory(sp.GetService<InDiskCache<Dictionary<string, double[]>>>())
+    new ChatBotServiceFactory(sp.GetService<InDiskCache<Dictionary<string, byte[]>>>())
         .CreateService(ChatBotServiceOption.ChatGpt));
 
 //var redisUrl = Environment.GetEnvironmentVariable(StartupEnvironmentVariables.RedisServerUrl)

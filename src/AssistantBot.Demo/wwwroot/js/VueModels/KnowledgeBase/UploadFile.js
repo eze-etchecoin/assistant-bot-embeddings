@@ -4,6 +4,8 @@ const vm = createApp({
         return {
             LastUploadedFileInfo: null,
             CurrentProcessFileName: "",
+            CurrentProcessFileInfo: null,
+            IsFileSelected: false,
             IsUploadingFile: false,
             ErrorMessage: "",
 
@@ -42,7 +44,7 @@ const vm = createApp({
                 await this.startCheckProgress();
             }
             catch (error) {
-                this.ErrorHandler(error);
+                this.errorHandler(error);
             }
             finally {
                 this.IsUploadingFile = false;
@@ -55,29 +57,49 @@ const vm = createApp({
                 return;
 
             this.ProgressCheckInterval = setInterval(async () => {
-                try {
-                    const { data } = await axios.get(`${ApiUrl}/KnowledgeBase/CheckProgress?fileName=${this.CurrentProcessFileName}`);
-                    this.CurrentProgress = data;
-                }
-                catch (error) {
-                    this.ErrorHandler(error);
-                }
+                this.CurrentProcessFileInfo = await this.getKnowledgeBaseFileInfo(this.CurrentProcessFileName);
+                this.CurrentProgress = this.CurrentProcessFileInfo.Progress;
             }, 1000);
+        },
+
+        async getKnowledgeBaseFileInfo(fileName) {
+            try {
+                const { data } = await axios.get(`${ApiUrl}/KnowledgeBase/GetKnowledgeBaseFileInfo?fileName=${fileName}`);
+                return data || null;
+            }
+            catch (error) {
+                this.errorHandler(error);
+            }
         },
 
         async getLastUploadedFileInfo() {
             try {
                 const { data } = await axios.get(`${ApiUrl}/KnowledgeBase/GetLastUploadedFileInfo`);
-                this.LastUploadedFileInfo = data;
+                if (data) {
+                    this.LastUploadedFileInfo = data;
+                }
+                else {
+                    this.LastUploadedFileInfo = null;
+                }
             }
             catch (error) {
-                this.ErrorHandler(error);
+                this.errorHandler(error);
             }
         },
 
-        ErrorHandler(error) {
+        errorHandler(error) {
             this.ErrorMessage = error.response?.data || error.message;
-        }
+        },
+
+        checkFileSelected(event) {
+            const input = event.target;
+            if ('files' in input && input.files.length > 0) {
+                this.IsFileSelected = true;
+            }
+            else {
+               this.IsFileSelected = false;
+            }
+        },
 
         //GetTestFromApi: async function () {
         //    try {
@@ -98,17 +120,38 @@ const vm = createApp({
             return this.IsUploadingFile;
         },
         DisabledUploadButton() {
-            return this.IsUploadingFile || this.CurrentProcessFileName && this.CurrentProgress < 100;
+            return !this.IsFileSelected ||
+                this.IsUploadingFile ||
+                this.CurrentProcessFileName !== "" && this.CurrentProgress < 100;
+        },
+        FormattedLastUploadedFileDateTime() {
+            if (!this.LastUploadedFileInfo)
+                return "";
+
+            return moment(this.LastUploadedFileInfo.UploadedDateTime).format("DD/MM/YYYY HH:mm:ss");
         }
     },
 
     watch: {
         CurrentProgress() {
+
+            if (this.CurrentProcessFileInfo?.ErrorMessage) {
+                //clearInterval(this.ProgressCheckInterval);
+                //this.ProgressCheckInterval = null;
+                this.ErrorMessage = this.CurrentProcessFileInfo.ErrorMessage;
+            }
+
             if (this.CurrentProgress >= 100) {
                 clearInterval(this.ProgressCheckInterval);
                 this.ProgressCheckInterval = null;
                 this.CurrentProcessFileName = "";
+
+                this.getLastUploadedFileInfo();
             }
         }
+    },
+
+    async mounted() {
+        await this.getLastUploadedFileInfo();
     }
 }).mount('#vueContainer');
