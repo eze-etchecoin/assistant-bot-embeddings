@@ -5,6 +5,7 @@ using RestSharp;
 using AssistantBot.Common.Helpers;
 using AssistantBot.Services.Cache;
 using System.IO.Compression;
+using AssistantBot.Utils;
 
 namespace AssistantBot.Services.ChatGpt
 {
@@ -70,7 +71,7 @@ namespace AssistantBot.Services.ChatGpt
             {
                 if (cachedEmbeddings.TryGetValue(textToTransform, out var cachedEmbedding))
                 {
-                    var uncompressedCachedEmbedding = CompressedByteToDoubleArray(cachedEmbedding);
+                    var uncompressedCachedEmbedding = CompressedDataHelper.CompressedByteToDoubleArray(cachedEmbedding);
                     return uncompressedCachedEmbedding;
                 }
             }
@@ -91,7 +92,7 @@ namespace AssistantBot.Services.ChatGpt
 
             if (!ignoreCache)
             {
-                cachedEmbeddings[textToTransform] = DoubleArrayToCompressedByte(embedding.ToArray());
+                cachedEmbeddings[textToTransform] = CompressedDataHelper.DoubleArrayToCompressedByte(embedding.ToArray());
                 await _embeddingsDiskCache.SaveAsync(cachedEmbeddings);
             }
 
@@ -99,31 +100,5 @@ namespace AssistantBot.Services.ChatGpt
         }
 
         private (string, string) AuthorizationHeader => ("Authorization", $"Bearer {_apiKey}");
-
-        private static byte[] DoubleArrayToCompressedByte(double[] doubleArray)
-        {
-            using var memoryStream = new MemoryStream();
-            using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress))
-            using (var binaryWriter = new BinaryWriter(gZipStream))
-            {
-                for (int i = 0; i < doubleArray.Length; i++)
-                    binaryWriter.Write(doubleArray[i]);
-            }
-            return memoryStream.ToArray();
-        }
-
-        private static double[] CompressedByteToDoubleArray(byte[] compressedByte)
-        {
-            var doubleList = new List<double>();
-            using (var memoryStream = new MemoryStream(compressedByte))
-            {
-                using var gZipStream = new GZipStream(memoryStream, CompressionMode.Decompress);
-                using var binaryReader = new BinaryReader(gZipStream);
-                while (gZipStream.Position < gZipStream.Length)
-                    doubleList.Add(binaryReader.ReadDouble());
-            }
-            return doubleList.ToArray();
-        }
-
     }
 }
