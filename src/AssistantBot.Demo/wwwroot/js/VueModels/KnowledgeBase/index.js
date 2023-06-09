@@ -10,19 +10,29 @@ createApp({
         };
     },
     methods: {
-        guardar() {
+
+        async guardar() {
             this.Texto = "";
             this.showingAlert = false;
             this.isLoading = true;
-            setTimeout(this.showAlert, 3000);
             
-            
+            const dataObject = {
+                Paragraph: this.Texto
+            };
+
+            const { data } = await axios.post(
+                `${ApiUrl}/knowledgebase/addparagraphtoknowledgebase`,
+                dataObject);
+
+            this.isLoading = false;
+            this.showingAlert = true;  
+
         },
         
-        showAlert() {
-            this.isLoading = false;
-            this.showingAlert = true;
-        },
+        //showAlert() {
+        //    this.isLoading = false;
+        //    this.showingAlert = true;
+        //},
 
         hidenAlert() {
             this.showingAlert = false;
