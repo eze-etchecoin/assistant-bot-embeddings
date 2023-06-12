@@ -5,10 +5,14 @@
 
 
 <div id="vueContainer">
-    <p>Ingrese su consulta:</p>
-    
-    <textarea input type="text" v-model="Texto" class="text-input" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 10px;"></textarea>
 
+    <div class="row">
+        <div class="col-3">
+            <p>Ingrese su consulta:</p>
+            <textarea rows="7" v-model="Texto" class="text-input form-control"></textarea>
+        </div>
+    </div>
+    
     <div v-if="isLoading" class="row">
         <div class="col-2">
             <div class="spinner-border" role="status">
