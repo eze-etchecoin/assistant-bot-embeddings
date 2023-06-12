@@ -12,7 +12,7 @@ createApp({
     methods: {
 
         async guardar() {
-            this.Texto = "";
+            
             this.showingAlert = false;
             this.isLoading = true;
             

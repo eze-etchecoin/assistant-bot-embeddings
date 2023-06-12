@@ -5,8 +5,16 @@
 
 <div id="vueContainer">
 
-    <p>Ingrese texto a guardar en base de conocimientos:</p>
-    <textarea input type="text" v-model="Texto" class="text-input" style="border: 1px solid #ccc; padding: 60px ;margin-bottom: 10px;"></textarea>
+    <div class="row">
+        <div class="col-3">
+
+            <p>Ingrese texto a guardar en base de conocimientos:</p>
+            <textarea rows="7" v-model="Texto" class="text-input form-control"></textarea>
+            
+        </div>
+    </div>
+
+   
 
 
     <div v-if="isLoading" class="row">
