@@ -12,7 +12,8 @@ createApp({
     data() {
         return {
             Texto: "",
-            textoIngresado: "",
+            textoIngresado :"",
+            textoRespuesta: "",
             mostrarRespuesta: false,
             isLoading: false,
         };
@@ -24,11 +25,9 @@ createApp({
     },
     methods: {
         async consultar() {
-            //this.textoIngresado = this.Texto;
-            //this.Texto = "";
+            this.textoIngresado = this.Texto;
             this.mostrarRespuesta = false;
             this.isLoading = true;
-            /*setTimeout(this.showAlert, 3000);*/
 
              // PETICIÓN A LA API
 
@@ -41,8 +40,10 @@ createApp({
                 dataObject);
 
             this.isLoading = false;
-            this.textoIngresado = data;
-            this.mostrarRespuesta = true;    
+            this.textoRespuesta = data;
+            this.mostrarRespuesta = true;
+            this.Texto = "";
+            
         },
 
         //showAlert() {
