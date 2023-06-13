@@ -21,6 +21,10 @@
         </div>
     </div>
 
+    <div>
+        <button v-on:click="consultar" v-bind:disabled="isButtonDisabled">Consultar</button>
+    </div>
+
     <div v-if="mostrarRespuesta" class="row">
         <div class="col-3">
             <br />
@@ -35,14 +39,19 @@
         </div>
     </div>
 
-    <div>
-        <button v-on:click="consultar" v-bind:disabled="isButtonDisabled">Consultar</button>
+    <div v-if="alertError" class="row">
+        <div class="col-3">
+            <br />
+
+            <div class="alert alert-danger alert-dismissible">
+                <p><strong>Failed to get response from API</strong></p>
+                <button type="button" class="btn-close" aria-label="Close" v-on:click="closeAlertError"></button>
+            </div>
+        </div>
     </div>
+    
     
 
 
-    <div >
-        
-        
-    </div>
+    
 </div>

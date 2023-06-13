@@ -14,6 +14,7 @@ createApp({
             Texto: "",
             textoIngresado :"",
             textoRespuesta: "",
+            alertError: false,
             mostrarRespuesta: false,
             isLoading: false,
         };
@@ -26,6 +27,7 @@ createApp({
     methods: {
         async consultar() {
             this.textoIngresado = this.Texto;
+            this.alertError= false,
             this.mostrarRespuesta = false;
             this.isLoading = true;
 
@@ -41,6 +43,7 @@ createApp({
 
             this.isLoading = false;
             this.textoRespuesta = data;
+            this.alertError= true,
             this.mostrarRespuesta = true;
             this.Texto = "";
             
