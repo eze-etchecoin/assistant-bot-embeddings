@@ -15,6 +15,7 @@ createApp({
             textoIngresado :"",
             textoRespuesta: "",
             alertError: false,
+            ErrorMessage: "",
             mostrarRespuesta: false,
             isLoading: false,
         };
@@ -32,7 +33,7 @@ createApp({
             this.isLoading = true;
 
              // PETICIÓN A LA API
-
+            try {
             const dataObject = {
                 Question: this.Texto
             };
@@ -43,17 +44,18 @@ createApp({
 
             this.isLoading = false;
             this.textoRespuesta = data;
-           
             this.mostrarRespuesta = true;
-            this.alertError = true;
             this.Texto = "";
             
+            }
+            catch (error) {
+                this.ErrorMessage = "Failed to get response from API";
+                //this.ErrorMessage = error.response?.data || error.message;
+                this.alertError = true;
+                this.isLoading = false;
+            }
+            
         },
-
-        //showAlert() {
-        //    this.isLoading = false;
-        //    this.mostrarRespuesta = true;
-        //},
 
         closeAlert() {
             this.mostrarRespuesta = false;   
