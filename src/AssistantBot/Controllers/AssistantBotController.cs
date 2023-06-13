@@ -38,7 +38,7 @@ namespace AssistantBot.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         public async Task<IActionResult> AskToKnowledgeBase(AskToKnowledgeBaseRequest request)
         {
-            throw new Exception("Failed to get response from API");
+            //throw new Exception("Failed to get response from API");
             try
             {
                 var result = await _service.AskToKnowledgeBase(request.Question);
