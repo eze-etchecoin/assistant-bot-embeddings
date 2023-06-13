@@ -27,7 +27,7 @@ createApp({
     methods: {
         async consultar() {
             this.textoIngresado = this.Texto;
-            this.alertError= false,
+            this.alertError = false;
             this.mostrarRespuesta = false;
             this.isLoading = true;
 
@@ -43,8 +43,9 @@ createApp({
 
             this.isLoading = false;
             this.textoRespuesta = data;
-            this.alertError= true,
+           
             this.mostrarRespuesta = true;
+            this.alertError = true;
             this.Texto = "";
             
         },
@@ -56,7 +57,11 @@ createApp({
 
         closeAlert() {
             this.mostrarRespuesta = false;   
-        }  
+        },
+
+        closeAlertError() {
+            this.alertError = false;
+        }
     }
 }).mount("#vueContainer");
 
