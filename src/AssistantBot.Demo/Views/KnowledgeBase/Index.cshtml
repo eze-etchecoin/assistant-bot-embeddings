@@ -32,13 +32,13 @@
         </div>
 
 
-        <div v-if="showingAlert" class="row">
+        <div v-if="AddParagraphErrorMessage" class="row">
             <div class="col-3">
                 <div class="alert alert-danger alert-dismissible">
 
                     <button type="button" class="btn-close" aria-label="Close" v-on:click="hidenAlert"></button>
 
-                    Error con la API
+                    {{ AddParagraphErrorMessage }}
 
                 </div>
             </div>
@@ -60,7 +60,7 @@
 
 
         <div>
-            <button v-on:click="guardar()" v-bind:disabled="buttonDisabled">Guardar</button>
+            <button type="button" v-on:click="guardar()" v-bind:disabled="buttonDisabled">Guardar</button>
         </div>
 
 
@@ -107,10 +107,10 @@
         </div>
     </div>
 
-    <div class="row" v-if="ErrorMessage">
+    <div class="row" v-if="UploadFileErrorMessage">
         <div class="col-4">
             <div class="alert alert-danger alert-dismissible">
-                {{ErrorMessage}}
+                {{UploadFileErrorMessage}}
                 <button type="button" class="btn-close" aria-label="Close" v-on:click="ErrorMessage = ''">
                 </button>
             </div>

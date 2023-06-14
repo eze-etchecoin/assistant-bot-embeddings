@@ -25,10 +25,10 @@ namespace AssistantBot.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         public async Task<ActionResult> AddParagraphToKnowledgeBase([FromBody]AddParagraphToKnowledgeBaseRequest request)
         {   
-            throw new Exception("error");
-
             try
             {
+                throw new Exception("Error en la API");
+
                 var storedKey = await _service.AddParagraphToKnowledgeBase(request.Paragraph);
 
                 return Ok(storedKey);
