@@ -8,9 +8,9 @@ namespace AssistantBot.Services.Factories
 {
     public class ChatBotServiceFactory : IChatBotServiceFactory
     {
-        private readonly InDiskCache<Dictionary<string, byte[]>> _inDiskCache;
+        private readonly InDiskCache<Dictionary<string, double[]>> _inDiskCache;
 
-        public ChatBotServiceFactory(InDiskCache<Dictionary<string, byte[]>> inDiskCache)
+        public ChatBotServiceFactory(InDiskCache<Dictionary<string, double[]>> inDiskCache)
         {
             _inDiskCache = inDiskCache;
         }

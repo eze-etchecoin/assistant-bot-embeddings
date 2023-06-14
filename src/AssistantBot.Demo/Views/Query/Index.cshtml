@@ -5,10 +5,14 @@
 
 
 <div id="vueContainer">
-    <p>Ingrese su consulta:</p>
-    
-    <textarea input type="text" v-model="Texto" class="text-input" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 10px;"></textarea>
 
+    <div class="row">
+        <div class="col-3">
+            <p>Enter your question:</p>
+            <textarea rows="7" v-model="Texto" class="text-input form-control"></textarea>
+        </div>
+    </div>
+    
     <div v-if="isLoading" class="row">
         <div class="col-2">
             <div class="spinner-border" role="status">
@@ -17,25 +21,37 @@
         </div>
     </div>
 
+    <div>
+        <button v-on:click="consultar" v-bind:disabled="isButtonDisabled">Consultar</button>
+    </div>
+
     <div v-if="mostrarRespuesta" class="row">
         <div class="col-3">
             <br />
-            <p>Respuesta:</p>
+            
             <div class="alert alert-info alert-dismissible">
+                <p><strong><u>Pregunta:</u></strong></p>
                 <p>{{ textoIngresado }}</p>
+                <p><strong><u>Respuesta:</u></strong></p>
+                <p>{{ textoRespuesta }}</p>
                 <button type="button" class="btn-close" aria-label="Close" v-on:click="closeAlert"></button>
             </div>
         </div>
     </div>
-    <div>
 
-        <button v-on:click="consultar" v-bind:disabled="isButtonDisabled">Consultar</button>
+    <div v-if="alertError" class="row">
+        <div class="col-3">
+            <br />
+
+            <div class="alert alert-danger alert-dismissible">
+                <p><strong>{{ErrorMessage}}</strong></p>
+                <button type="button" class="btn-close" aria-label="Close" v-on:click="closeAlertError"></button>
+            </div>
+        </div>
     </div>
+    
     
 
 
-    <div >
-        
-        
-    </div>
+    
 </div>

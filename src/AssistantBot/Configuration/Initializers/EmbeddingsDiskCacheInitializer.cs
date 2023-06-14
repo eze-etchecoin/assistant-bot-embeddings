@@ -1,8 +1,6 @@
 ﻿using AssistantBot.Common.DataTypes;
 using AssistantBot.Common.Interfaces;
 using AssistantBot.Services.Cache;
-using AssistantBot.Utils;
-using System.IO.Compression;
 
 namespace AssistantBot.Configuration.Initializers
 {
@@ -10,7 +8,7 @@ namespace AssistantBot.Configuration.Initializers
     {
         public static async Task LoadEmbeddingsIntoCache(IServiceProvider serviceProvider)
         {
-            var inDiskCache = serviceProvider.GetService<InDiskCache<Dictionary<string, byte[]>>>();
+            var inDiskCache = serviceProvider.GetService<InDiskCache<Dictionary<string, double[]>>>();
 
             var embeddings = await inDiskCache.LoadAsync();
             if (embeddings.Count == 0)
@@ -20,11 +18,13 @@ namespace AssistantBot.Configuration.Initializers
 
             foreach(var embedding in embeddings)
             {
-                customCache.AddVector(new EmbeddedTextVector
+                var textVector = new EmbeddedTextVector
                 {
                     ParagraphWithPage = new ParagraphWithPage(1, embedding.Key),
-                    Values = CompressedDataHelper.CompressedByteToDoubleArray(embedding.Value)
-                });
+                    Values = embedding.Value
+                };
+
+                customCache.AddVector(textVector);
             }
         }
     }

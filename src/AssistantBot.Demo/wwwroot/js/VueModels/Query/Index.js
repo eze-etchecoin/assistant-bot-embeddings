@@ -12,7 +12,10 @@ createApp({
     data() {
         return {
             Texto: "",
-            textoIngresado: "",
+            textoIngresado :"",
+            textoRespuesta: "",
+            alertError: false,
+            ErrorMessage: "",
             mostrarRespuesta: false,
             isLoading: false,
         };
@@ -24,14 +27,13 @@ createApp({
     },
     methods: {
         async consultar() {
-            //this.textoIngresado = this.Texto;
-            //this.Texto = "";
+            this.textoIngresado = this.Texto;
+            this.alertError = false;
             this.mostrarRespuesta = false;
             this.isLoading = true;
-            /*setTimeout(this.showAlert, 3000);*/
 
              // PETICIÓN A LA API
-
+            try {
             const dataObject = {
                 Question: this.Texto
             };
@@ -41,18 +43,27 @@ createApp({
                 dataObject);
 
             this.isLoading = false;
-            this.textoIngresado = data;
-            this.mostrarRespuesta = true;    
+            this.textoRespuesta = data;
+            this.mostrarRespuesta = true;
+            this.Texto = "";
+            
+            }
+            catch (error) {
+                this.ErrorMessage = "Failed to get response from API";
+                //this.ErrorMessage = error.response?.data || error.message;
+                this.alertError = true;
+                this.isLoading = false;
+            }
+            
         },
-
-        //showAlert() {
-        //    this.isLoading = false;
-        //    this.mostrarRespuesta = true;
-        //},
 
         closeAlert() {
             this.mostrarRespuesta = false;   
-        }  
+        },
+
+        closeAlertError() {
+            this.alertError = false;
+        }
     }
 }).mount("#vueContainer");
 

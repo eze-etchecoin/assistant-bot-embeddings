@@ -27,12 +27,12 @@ builder.Services.Configure<AssistantBotConfigurationOptions>(
     builder.Configuration.GetSection("AssistantBotOptions"));
 
 // InDiskCache is instanciated.
-builder.Services.AddSingleton<InDiskCache<Dictionary<string, byte[]>>>();
+builder.Services.AddSingleton<InDiskCache<Dictionary<string, double[]>>>();
 
 // ChatGptService is instanciated.
 var openAiApiKey = Environment.GetEnvironmentVariable(StartupEnvironmentVariables.OpenAIApiKey) ?? "NO_KEY";
 builder.Services.AddSingleton(sp => 
-    new ChatBotServiceFactory(sp.GetService<InDiskCache<Dictionary<string, byte[]>>>())
+    new ChatBotServiceFactory(sp.GetService<InDiskCache<Dictionary<string, double[]>>>())
         .CreateService(ChatBotServiceOption.ChatGpt));
 
 //var redisUrl = Environment.GetEnvironmentVariable(StartupEnvironmentVariables.RedisServerUrl)
