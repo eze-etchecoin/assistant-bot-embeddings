@@ -13,7 +13,7 @@ namespace AssistantBot.Tests
 
         public ChatBotServiceTests(ITestOutputHelper output)
         {
-            _service = new ChatBotServiceFactory(new InDiskCache<Dictionary<string, byte[]>>())
+            _service = new ChatBotServiceFactory(new InDiskCache<Dictionary<string, double[]>>())
                 .CreateService(ChatBotServiceOption.ChatGpt);
 
             _output = output;
