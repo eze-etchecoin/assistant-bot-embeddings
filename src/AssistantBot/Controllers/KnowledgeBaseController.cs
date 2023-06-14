@@ -25,6 +25,8 @@ namespace AssistantBot.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         public async Task<ActionResult> AddParagraphToKnowledgeBase([FromBody]AddParagraphToKnowledgeBaseRequest request)
         {   
+            throw new Exception("error");
+
             try
             {
                 var storedKey = await _service.AddParagraphToKnowledgeBase(request.Paragraph);
@@ -37,7 +39,7 @@ namespace AssistantBot.Controllers
             }
         }
 
-        [HttpPost("UploadFile")]
+        [HttpPost("Knowledge Base")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         public IActionResult UploadFile(IFormFile file)
         {

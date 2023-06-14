@@ -9,9 +9,5 @@ namespace AssistantBot.Demo.Controllers
             return View();
         }
 
-        public IActionResult UploadFile()
-        {
-            return View();
-        }
     }
 }
