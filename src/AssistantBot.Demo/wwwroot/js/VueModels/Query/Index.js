@@ -14,8 +14,8 @@ createApp({
             Texto: "",
             textoIngresado :"",
             textoRespuesta: "",
-            alertError: false,
-            ErrorMessage: "",
+            alertError: "",
+            
             mostrarRespuesta: false,
             isLoading: false,
         };
@@ -28,7 +28,7 @@ createApp({
     methods: {
         async consultar() {
             this.textoIngresado = this.Texto;
-            this.alertError = false;
+            this.alertError = "";
             this.mostrarRespuesta = false;
             this.isLoading = true;
 
@@ -48,13 +48,22 @@ createApp({
             this.Texto = "";
             
             }
-            catch (error) {
-                this.ErrorMessage = "Failed to get response from API";
-                //this.ErrorMessage = error.response?.data || error.message;
-                this.alertError = true;
-                this.isLoading = false;
-            }
+            //catch (error) {
+            //    this.ErrorMessage = "Failed to get response from API";
+            //    //this.ErrorMessage = error.response?.data || error.message;
+            //    this.alertError = true;
+            //    this.isLoading = false;
+            //}
             
+
+            catch (error) {
+                this.errorHandler(error, "alertError");
+                this.isLoading = false;
+            } 
+        },
+
+        errorHandler(error, errorMessageProp) {
+            this[errorMessageProp] = error.response?.data || error.message;
         },
 
         closeAlert() {
@@ -62,7 +71,7 @@ createApp({
         },
 
         closeAlertError() {
-            this.alertError = false;
+            this.alertError = "";
         }
     }
 }).mount("#vueContainer");

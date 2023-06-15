@@ -27,6 +27,8 @@ namespace AssistantBot.Controllers
         {   
             try
             {
+                //throw new Exception("Error en la API");
+
                 var storedKey = await _service.AddParagraphToKnowledgeBase(request.Paragraph);
 
                 return Ok(storedKey);
@@ -37,7 +39,7 @@ namespace AssistantBot.Controllers
             }
         }
 
-        [HttpPost("UploadFile")]
+        [HttpPost("Knowledge Base")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         public IActionResult UploadFile(IFormFile file)
         {
