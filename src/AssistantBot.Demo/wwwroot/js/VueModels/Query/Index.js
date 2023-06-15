@@ -48,14 +48,6 @@ createApp({
             this.Texto = "";
             
             }
-            //catch (error) {
-            //    this.ErrorMessage = "Failed to get response from API";
-            //    //this.ErrorMessage = error.response?.data || error.message;
-            //    this.alertError = true;
-            //    this.isLoading = false;
-            //}
-            
-
             catch (error) {
                 this.errorHandler(error, "alertError");
                 this.isLoading = false;
