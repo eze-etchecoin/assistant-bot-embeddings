@@ -27,7 +27,7 @@ namespace AssistantBot.Controllers
         {   
             try
             {
-                throw new Exception("Error en la API");
+                //throw new Exception("Error en la API");
 
                 var storedKey = await _service.AddParagraphToKnowledgeBase(request.Paragraph);
 
