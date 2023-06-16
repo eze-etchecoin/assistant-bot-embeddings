@@ -4,6 +4,7 @@ using AssistantBot.Common.Exceptions;
 using RestSharp;
 using AssistantBot.Common.Helpers;
 using AssistantBot.Services.Cache;
+using System.Diagnostics;
 
 namespace AssistantBot.Services.ChatGpt
 {
@@ -16,6 +17,8 @@ namespace AssistantBot.Services.ChatGpt
 
         private readonly RestClient _client;
         private readonly InDiskCache<Dictionary<string, double[]>> _embeddingsDiskCache;
+
+        private static readonly object _embeddingsLockObject = new();
 
         public ChatGptService(string apiKey, InDiskCache<Dictionary<string, double[]>> inDiskCache)
         {
@@ -76,15 +79,29 @@ namespace AssistantBot.Services.ChatGpt
 
             var restSharpHelper = new RestSharpJsonHelper<EmbeddingsRequestModel, EmbeddingsResponseModel>(_client);
 
-            var embeddingsResponse = await restSharpHelper.ExecuteRequestAsync(
-                url: "/v1/embeddings",
-                method: Method.Post,
-                body: new EmbeddingsRequestModel
+            EmbeddingsResponseModel? embeddingsResponse;
+            lock (_embeddingsLockObject)
+            {
+                var stopwatch = Stopwatch.StartNew();
+
+                embeddingsResponse = restSharpHelper.ExecuteRequestAsync(
+                    url: "/v1/embeddings",
+                    method: Method.Post,
+                    body: new EmbeddingsRequestModel
+                    {
+                        Model = TextEmbeddingModels.Text_Embedding_Ada_002,
+                        Input = textToTransform
+                    },
+                    headers: new[] { AuthorizationHeader }).Result;
+
+                stopwatch.Stop();
+                var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
+                if (elapsedMilliseconds < 1000)
                 {
-                    Model = TextEmbeddingModels.Text_Embedding_Ada_002,
-                    Input = textToTransform
-                },
-                headers: new[] { AuthorizationHeader });
+                    var millisecondsToSleep = 1000 - (int)elapsedMilliseconds;
+                    Thread.Sleep(millisecondsToSleep);
+                }
+            }
 
             var embedding = embeddingsResponse.Data.First().Embedding;
 

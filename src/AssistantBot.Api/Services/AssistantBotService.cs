@@ -34,7 +34,8 @@ namespace AssistantBot.Services
             var questionEmbedding = await _chatBotService.GetEmbedding(question, ignoreCache: true);
 
             var knowledgeBaseTopResults = _indexedVectorStorage.SearchDataBySimilarVector<ParagraphWithPage>(
-                new EmbeddedTextVector(questionEmbedding.ToArray(), default(ParagraphWithPage)));
+                new EmbeddedTextVector(questionEmbedding.ToArray(), default(ParagraphWithPage)),
+                20);
 
             if (!knowledgeBaseTopResults.Any())
                 throw new AssistantBotException("Error at question processing.");

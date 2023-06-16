@@ -22,7 +22,7 @@
         public string? ErrorMessage { get; set; }
 
         public int Progress
-        {
+        { 
             get => TotalParagraphs == 0 
                 ? 0 
                 : (int)Math.Round((double)ProcessedParagraphs / TotalParagraphs * 100);
