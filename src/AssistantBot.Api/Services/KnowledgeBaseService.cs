@@ -3,6 +3,7 @@ using AssistantBot.Common.Interfaces;
 using AssistantBot.Common.Exceptions;
 using AssistantBot.Services.DocumentConverter;
 using AssistantBot.Models.KnowledgeBase;
+using static iText.Svg.SvgConstants;
 
 namespace AssistantBot.Services
 {
@@ -31,11 +32,8 @@ namespace AssistantBot.Services
             var embedding = await _chatBotService.GetEmbedding(paragraph) 
                 ?? throw new AssistantBotException("An error has ocurred getting the embedding for given text.");
 
-            var storedHash = _indexedVectorStorage.AddVector(new EmbeddedTextVector
-            {
-                Values = embedding.ToArray(),
-                ParagraphWithPage = new ParagraphWithPage(1, paragraph)
-            });
+            var storedHash = _indexedVectorStorage.AddVector(
+                new EmbeddedTextVector(embedding.ToArray(), new ParagraphWithPage(1, paragraph)));
 
             return storedHash;
         }
@@ -59,11 +57,10 @@ namespace AssistantBot.Services
                     var embedding = await _chatBotService.GetEmbedding(paragraph.Text)
                     ?? throw new AssistantBotException("An error has ocurred getting the embedding for given text.");
 
-                    var storedHash = _indexedVectorStorage.AddVector(new EmbeddedTextVector
-                    {
-                        Values = embedding.ToArray(),
-                        ParagraphWithPage = new ParagraphWithPage(paragraph.Page, paragraph.Text)
-                    });
+                    var storedHash = _indexedVectorStorage.AddVector(
+                        new EmbeddedTextVector(
+                            embedding.ToArray(),
+                            new ParagraphWithPage(paragraph.Page, paragraph.Text)));
                 }
                 catch(Exception ex)
                 {

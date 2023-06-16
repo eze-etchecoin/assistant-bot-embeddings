@@ -135,7 +135,7 @@ namespace AssistantBot.CustomCache
             {
                 var hashCode = item.Key.ToString();
                 var charsForFolder = hashCode.Length < 5 ? hashCode : hashCode.Substring(0, 5);
-                var fileName = $"{hashCode}.json";
+                var fileName = $"{hashCode}";
 
                 var folderPath = Path.Combine(_cacheFolderPath);
                 foreach(var c in charsForFolder)
@@ -156,9 +156,21 @@ namespace AssistantBot.CustomCache
                     continue;
                 }
 
-                var data = JsonConvert.SerializeObject(item);
+                // Properties values are serialized to binary, in the following order:
+                // 1.Values
+                // 2.Data
 
-                File.WriteAllText(filePath, data);
+                using var fileStream = File.Create(filePath);
+                using var binaryWriter = new BinaryWriter(fileStream);
+                
+                binaryWriter.Write(item.Value.Values.Length);
+                foreach (var value in item.Value.Values)
+                {
+                    binaryWriter.Write(value);
+                }
+
+                var data = JsonConvert.SerializeObject(item.Value.Data);
+                binaryWriter.Write(data);
             }
         }
 
@@ -173,10 +185,28 @@ namespace AssistantBot.CustomCache
 
             foreach(var file in files)
             {
-                var data = File.ReadAllText(file);
-                var item = JsonConvert.DeserializeObject<KeyValuePair<int, T>>(data);
+                var key = int.Parse(Path.GetFileNameWithoutExtension(file));
 
-                _dict[item.Key] = item.Value;
+                //if(_dict.ContainsKey(key))
+                //{
+                //    continue;
+                //}
+
+                // Read values and data from binary file
+                using var fileStream = File.OpenRead(file);
+                using var binaryReader = new BinaryReader(fileStream);
+
+                var valuesLength = binaryReader.ReadInt32();
+                var values = new double[valuesLength];
+                for (int i = 0; i < valuesLength; i++)
+                {
+                    values[i] = binaryReader.ReadDouble();
+                }
+
+                var jsonData = binaryReader.ReadString();
+
+                var vector = (T)Activator.CreateInstance(typeof(T), values, jsonData);
+                _dict[key] = vector;
             }
         }
     }

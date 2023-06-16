@@ -18,11 +18,9 @@ namespace AssistantBot.Configuration.Initializers
 
             foreach(var embedding in embeddings)
             {
-                var textVector = new EmbeddedTextVector
-                {
-                    ParagraphWithPage = new ParagraphWithPage(1, embedding.Key),
-                    Values = embedding.Value
-                };
+                var textVector = new EmbeddedTextVector(
+                    embedding.Value, 
+                    new ParagraphWithPage(1, embedding.Key));
 
                 customCache.AddVector(textVector);
             }

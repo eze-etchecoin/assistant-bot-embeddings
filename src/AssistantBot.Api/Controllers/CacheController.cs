@@ -31,11 +31,8 @@ namespace AssistantBot.Controllers
 
                 foreach (var embedding in embeddings)
                 {
-                    _indexedVectorStorage.AddVector(new EmbeddedTextVector
-                    {
-                        ParagraphWithPage = new ParagraphWithPage(1, embedding.Key),
-                        Values = embedding.Value
-                    });
+                    _indexedVectorStorage.AddVector(
+                        new EmbeddedTextVector(embedding.Value, new ParagraphWithPage(1, embedding.Key)));
                 }
 
                 return Ok();
