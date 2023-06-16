@@ -400,3 +400,4 @@ FodyWeavers.xsd
 /src/AssistantBot.Api/Cache
 /src/AssistantBot/UploadedFiles
 /src/AssistantBot.CustomCache/Cache
+/src/AssistantBot.Api/UploadedFiles
