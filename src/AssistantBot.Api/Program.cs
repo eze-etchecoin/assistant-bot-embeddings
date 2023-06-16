@@ -60,6 +60,6 @@ app.UseStaticFiles();
 
 app.UseCors();
 
-await EmbeddingsDiskCacheInitializer.LoadEmbeddingsIntoCache(app.Services);
+//await EmbeddingsDiskCacheInitializer.LoadEmbeddingsIntoCache(app.Services);
 
 app.Run();

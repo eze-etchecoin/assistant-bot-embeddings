@@ -41,7 +41,6 @@ namespace AssistantBot.Controllers
             
             try
             {
-                throw new Exception("Failed to get response from API");
                 var result = await _service.AskToKnowledgeBase(request.Question);
 
                 return Ok(result);

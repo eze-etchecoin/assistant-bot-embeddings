@@ -63,16 +63,16 @@ namespace AssistantBot.Services.ChatGpt
 
         public async Task<IEnumerable<double>> GetEmbedding(string textToTransform, bool ignoreCache = false)
         {
-            var cachedEmbeddings = await _embeddingsDiskCache.LoadAsync();
+            //var cachedEmbeddings = await _embeddingsDiskCache.LoadAsync();
 
-            if (!ignoreCache)
-            {
-                if (cachedEmbeddings.TryGetValue(textToTransform, out var cachedEmbedding))
-                {
-                    //var uncompressedCachedEmbedding = CompressedDataHelper.CompressedByteToDoubleArray(cachedEmbedding);
-                    return cachedEmbedding;
-                }
-            }
+            //if (!ignoreCache)
+            //{
+            //    if (cachedEmbeddings.TryGetValue(textToTransform, out var cachedEmbedding))
+            //    {
+            //        //var uncompressedCachedEmbedding = CompressedDataHelper.CompressedByteToDoubleArray(cachedEmbedding);
+            //        return cachedEmbedding;
+            //    }
+            //}
 
             var restSharpHelper = new RestSharpJsonHelper<EmbeddingsRequestModel, EmbeddingsResponseModel>(_client);
 
@@ -88,13 +88,13 @@ namespace AssistantBot.Services.ChatGpt
 
             var embedding = embeddingsResponse.Data.First().Embedding;
 
-            if (!ignoreCache)
-            {
-                //cachedEmbeddings[textToTransform] = CompressedDataHelper.DoubleArrayToCompressedByte(embedding.ToArray());
+            //if (!ignoreCache)
+            //{
+            //    //cachedEmbeddings[textToTransform] = CompressedDataHelper.DoubleArrayToCompressedByte(embedding.ToArray());
 
-                cachedEmbeddings[textToTransform] = embedding.ToArray();
-                await _embeddingsDiskCache.SaveAsync(cachedEmbeddings);
-            }
+            //    cachedEmbeddings[textToTransform] = embedding.ToArray();
+            //    await _embeddingsDiskCache.SaveAsync(cachedEmbeddings);
+            //}
 
             return embedding;
         }

@@ -9,7 +9,7 @@ namespace AssistantBot.CustomCache
         {
             app.MapPost(
                 "/AddVector", 
-                async(HttpContext context, CustomMemoryStorage<IVectorWithObject> storage) =>
+                async(HttpContext context, CustomMemoryStorage<EmbeddedTextVector> storage) =>
                 {
                     var vectorObject = await context.Request.ReadFromJsonAsync<EmbeddedTextVector>();
                     var storedHash = storage.AddVector(vectorObject);
@@ -19,7 +19,7 @@ namespace AssistantBot.CustomCache
 
             app.MapPost(
                 "/SearchDataBySimilarVector",
-                async (HttpContext context, CustomMemoryStorage<IVectorWithObject> storage) =>
+                async (HttpContext context, CustomMemoryStorage<EmbeddedTextVector> storage) =>
                 {
                     var requestBody = await context.Request.ReadFromJsonAsync<EmbeddedTextVector>();
                     if(!int.TryParse(context.Request.Query["numResults"], out var num))
@@ -33,7 +33,7 @@ namespace AssistantBot.CustomCache
 
             app.MapGet(
                 "/GetDataByKey",
-                (HttpContext context, CustomMemoryStorage<IVectorWithObject> storage) => 
+                (HttpContext context, CustomMemoryStorage<EmbeddedTextVector> storage) => 
                 {
                     var key = context.Request.Query["key"].ToString();
                     if (string.IsNullOrEmpty(key))
@@ -50,17 +50,17 @@ namespace AssistantBot.CustomCache
 
             app.MapGet(
                 "/GetKeys",
-                (CustomMemoryStorage<IVectorWithObject> storage) => storage.GetKeys())
+                (CustomMemoryStorage<EmbeddedTextVector> storage) => storage.GetKeys())
             .WithName("GetKeys");
 
             app.MapGet(
                 "/Check",
-                (CustomMemoryStorage<IVectorWithObject> storage) => Results.Ok(storage.TestConnection()))
+                (CustomMemoryStorage<EmbeddedTextVector> storage) => Results.Ok(storage.TestConnection()))
             .WithName("Check");
 
             app.MapDelete(
                 "/DeleteAllKeys",
-                (CustomMemoryStorage<IVectorWithObject> storage) => storage.DeleteAllKeys())
+                (CustomMemoryStorage<EmbeddedTextVector> storage) => storage.DeleteAllKeys())
             .WithName("DeleteAllKeys");
         }
     }

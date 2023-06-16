@@ -1,3 +1,4 @@
+using AssistantBot.Common.DataTypes;
 using AssistantBot.Common.Interfaces;
 using AssistantBot.CustomCache;
 
@@ -8,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<CustomMemoryStorage<IVectorWithObject>>();
+builder.Services.AddSingleton<CustomMemoryStorage<EmbeddedTextVector>>();
 
 var app = builder.Build();
 
