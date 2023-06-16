@@ -5,6 +5,12 @@ namespace AssistantBot.Common.DataTypes
 {
     public class EmbeddedTextVector : IVectorWithObject
     {
+        public EmbeddedTextVector()
+        {
+            Values = Array.Empty<double>();
+            ParagraphWithPage = new ParagraphWithPage();
+        }
+
         public EmbeddedTextVector(double[] values, ParagraphWithPage paragraphWithPage)
         {
             Values = values;
