@@ -60,18 +60,22 @@ namespace AssistantBot.Controllers
                     if (!validExtensions.Contains(extension.ToLower()))
                         throw new AssistantBotException("Invalid file extension.");
 
-                    var fileName2 = Path.Combine(".", "UploadedFiles", fileName);
+                    var uploadedFilesFolder = Path.Combine(".", "UploadedFiles");
+                    if (!Directory.Exists(uploadedFilesFolder))
+                    {
+                        Directory.CreateDirectory(uploadedFilesFolder);
+                    }
 
-                    if (System.IO.File.Exists(fileName2))
+                    uploadedFilePath = Path.Combine(uploadedFilesFolder, fileName);
+
+                    if (System.IO.File.Exists(uploadedFilePath))
                     {
                         throw new AssistantBotException("File already exists.");
                     }
 
-                    using var fileStream = new FileStream(fileName2, FileMode.Create);
+                    using var fileStream = new FileStream(uploadedFilePath, FileMode.Create);
                     var inputStream = file.OpenReadStream();
                     inputStream.CopyTo(fileStream);
-
-                    uploadedFilePath = fileName2;
                 }
 
                 if (string.IsNullOrEmpty(uploadedFilePath))
