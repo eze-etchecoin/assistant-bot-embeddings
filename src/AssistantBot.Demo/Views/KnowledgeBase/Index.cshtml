@@ -123,7 +123,11 @@
                 <span v-if="!LastUploadedFileInfo">No hay información del último archivo subido.</span>
                 <span v-else>
                     Último archivo subido: <br />
-                    <strong>{{ LastUploadedFileInfo.FileName }}</strong><br/>
+                    <strong>
+                        {{ LastUploadedFileInfo.FileName }}  
+                        <span v-if="CurrentProcessFileName && CurrentProgress < 100">(procesando)</span>
+                    </strong>
+                    <br/>
                     {{ FormattedLastUploadedFileDateTime }}
                 </span>
             </div>

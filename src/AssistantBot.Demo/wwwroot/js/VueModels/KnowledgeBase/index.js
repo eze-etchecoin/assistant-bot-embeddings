@@ -78,8 +78,9 @@ const vm = createApp({
                     });
 
                 this.CurrentProcessFileName = data;
+                this.CurrentProcessFileInfo = null;
 
-                await this.startCheckProgress();
+                setTimeout(this.getLastUploadedFileInfo, 1000)
             }
             catch (error) {
                 this.errorHandler(error, "UploadFileErrorMessage");
@@ -115,6 +116,12 @@ const vm = createApp({
                 const { data } = await axios.get(`${ApiUrl}/KnowledgeBase/GetLastUploadedFileInfo`);
                 if (data) {
                     this.LastUploadedFileInfo = data;
+                    if (this.LastUploadedFileInfo.Progress < 100) {
+                        // There's a file being processed
+                        this.CurrentProcessFileName = this.LastUploadedFileInfo.FileName;
+                        this.CurrentProgress = this.LastUploadedFileInfo.Progress;
+                        await this.startCheckProgress();
+                    }
                 }
                 else {
                     this.LastUploadedFileInfo = null;
