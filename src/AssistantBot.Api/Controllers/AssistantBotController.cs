@@ -25,7 +25,7 @@ namespace AssistantBot.Controllers
         {
             try
             {
-                var result = await _service.SendMessage(request.Message);
+                var result = await _service.SendMessage(request);
                 return Ok(result);
             }
             catch(Exception ex)
@@ -41,7 +41,7 @@ namespace AssistantBot.Controllers
             
             try
             {
-                var result = await _service.AskToKnowledgeBase(request.Question);
+                var result = await _service.AskToKnowledgeBase(request);
 
                 return Ok(result);
             }

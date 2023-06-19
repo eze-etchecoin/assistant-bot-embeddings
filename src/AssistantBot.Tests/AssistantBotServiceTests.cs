@@ -33,7 +33,10 @@ namespace AssistantBot.Tests
         [Fact]
         public async Task AskToKnowledgeBase_ValidQuestion()
         {
-            var result = await _service.AskToKnowledgeBase("En dónde vivía Facundo?");
+            var result = await _service.AskToKnowledgeBase(new Models.AssistantBot.AskToKnowledgeBaseRequest
+            {
+                Question = "Dónde vivía Facundo?"
+            });
 
             Assert.NotNull(result);
             Assert.NotEmpty(result);

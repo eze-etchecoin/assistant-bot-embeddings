@@ -53,6 +53,34 @@ namespace AssistantBot.Services.ChatGpt
             return chatResponse.Choices.First().Message.Content;
         }
 
+        public async Task<string> SendMessage(string message, IEnumerable<IChatBotMessage> contextMessages)
+        {
+            // Request is built here, pointing to OpenAI corresponding endpoint
+            var restSharpHelper = new RestSharpJsonHelper<ChatCompletionRequestModel, ChatCompletionResponseModel>(_client);
+
+            var messagesList = new List<ChatMessageModel>();
+            messagesList.AddRange(
+                contextMessages.Select(x => new ChatMessageModel(MapRole(x.Role), x.Content)));
+
+            messagesList.Add(new ChatMessageModel(ChatMessageRoles.User, message));
+
+            var chatResponse = await restSharpHelper.ExecuteRequestAsync(
+                url: "/v1/chat/completions",
+                method: Method.Post,
+                body: new ChatCompletionRequestModel
+                {
+                    Messages = messagesList,
+                    Model = _chatModel,
+                    MaxTokens = 256
+                },
+                new[] { AuthorizationHeader });
+
+            if (!chatResponse.Choices.Any())
+                throw new AssistantBotException($"Assistant is not available.");
+
+            // The first (or only) value is returned
+            return chatResponse.Choices.First().Message.Content;
+        }
 
         public async Task<string> SendTrainingInput(ITrainingDataModel dataModel)
         {
@@ -117,5 +145,13 @@ namespace AssistantBot.Services.ChatGpt
         }
 
         private (string, string) AuthorizationHeader => ("Authorization", $"Bearer {_apiKey}");
+
+        private string MapRole(string role) => role.ToLower() switch
+        {
+            "user" => ChatMessageRoles.User,
+            "assistant" => ChatMessageRoles.Assistant,
+            "system" => ChatMessageRoles.System,
+            _ => throw new AssistantBotException($"Unknown role: {role}")
+        };
     }
 }
