@@ -53,16 +53,16 @@ namespace AssistantBot.Services.ChatGpt
             return chatResponse.Choices.First().Message.Content;
         }
 
-        public async Task<string> SendMessage(string message, IEnumerable<IChatBotMessage> contextMessages)
+        public async Task<string> SendMessage(IEnumerable<IChatBotMessage> messages)
         {
             // Request is built here, pointing to OpenAI corresponding endpoint
             var restSharpHelper = new RestSharpJsonHelper<ChatCompletionRequestModel, ChatCompletionResponseModel>(_client);
 
             var messagesList = new List<ChatMessageModel>();
             messagesList.AddRange(
-                contextMessages.Select(x => new ChatMessageModel(MapRole(x.Role), x.Content)));
+                messages.Select(x => new ChatMessageModel(MapRole(x.Role), x.Content)));
 
-            messagesList.Add(new ChatMessageModel(ChatMessageRoles.User, message));
+            //messagesList.Add(new ChatMessageModel(ChatMessageRoles.User, message));
 
             var chatResponse = await restSharpHelper.ExecuteRequestAsync(
                 url: "/v1/chat/completions",

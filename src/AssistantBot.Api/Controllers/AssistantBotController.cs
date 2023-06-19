@@ -10,13 +10,13 @@ namespace AssistantBot.Controllers
     [Route("[controller]")]
     public class AssistantBotController : ControllerBase
     {
-        private readonly AssistantBotService _service;
+        private static AssistantBotService _service;
 
         public AssistantBotController(
             IChatBotService chatBotService,
             IIndexedVectorStorage<EmbeddedTextVector> indexedVectorStorage)
         {
-            _service = new AssistantBotService(chatBotService, indexedVectorStorage);
+            _service ??= new AssistantBotService(chatBotService, indexedVectorStorage);
         }
 
         [HttpPost("SendMessage")]

@@ -19,6 +19,7 @@ namespace AssistantBot.Controllers
             IIndexedVectorStorage<EmbeddedTextVector> indexedVectorStorage)
         {
             _service = new KnowledgeBaseService(chatBotService, indexedVectorStorage);
+
         }
 
         [HttpPost("AddParagraphToKnowledgeBase")]

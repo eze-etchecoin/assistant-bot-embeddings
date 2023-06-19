@@ -10,8 +10,8 @@ namespace AssistantBot.Services
     {
         private readonly IChatBotService _chatBotService;
         private readonly IIndexedVectorStorage<EmbeddedTextVector> _indexedVectorStorage;
-
-        private List<IChatBotMessage> _messages;
+        
+        private readonly List<IChatBotMessage> _messages = new();
 
         public AssistantBotService(
             IChatBotService chatBotService,
@@ -23,10 +23,22 @@ namespace AssistantBot.Services
 
         public async Task<string> SendMessage(SendMessageRequest request)
         {
-            _messages.Add(
-                new AssistantBotMessage(request.User, AssistantBotRole.User, request.Message));
+            AddMessageToHistory(request.User, AssistantBotRole.User, request.Message);
 
-            var result = await _chatBotService.SendMessage(request.Message, _messages);
+            string result;
+            try
+            {
+                result = await _chatBotService.SendMessage(
+                    GetMessagesHistory(request.User));
+            }
+            catch
+            {
+                RemoveLastMessageFromHistory(request.User);
+                throw;
+            }
+
+            AddMessageToHistory(request.User, AssistantBotRole.Assistant, result);
+
             return result;
         }
 
@@ -46,13 +58,46 @@ namespace AssistantBot.Services
             if (!knowledgeBaseTopResults.Any())
                 throw new AssistantBotException("Error at question processing.");
 
-            var userQuestionPrompt = PromptTemplate.GetPromptFromTemplate(
-                string.Join("\n", knowledgeBaseTopResults.Select(x => x.Text)),
-                request.Question);
+            var basePrompt = PromptTemplate.GetPromptFromTemplate(
+                string.Join("\n", knowledgeBaseTopResults.Select(x => x.Text)));
 
-            var result = await _chatBotService.SendMessage(userQuestionPrompt);
+            AddMessageToHistory(request.User, AssistantBotRole.User, request.Question);
+
+            var messages = new List<IChatBotMessage>
+            {
+                new AssistantBotMessage(request.User, AssistantBotRole.System, basePrompt)
+            };
+
+            messages.AddRange(GetMessagesHistory(request.User));
+
+            string result;
+            try
+            {
+                result = await _chatBotService.SendMessage(messages);
+            }
+            catch
+            {
+                RemoveLastMessageFromHistory(request.User);
+                throw;
+            }
+
+            AddMessageToHistory(request.User, AssistantBotRole.Assistant, result);
 
             return result;
         }
+
+        private void AddMessageToHistory(string user, string role, string content)
+        {
+            _messages.Add(new AssistantBotMessage(user, role, content));
+        }
+
+        private void RemoveLastMessageFromHistory(string user) =>
+            _messages.Remove(_messages.Last(x => x.User == user));
+
+        private List<IChatBotMessage> GetMessagesHistory(string user, int numResults = 11) =>
+            _messages.Where(x => x.User == user)
+                .OrderBy(x => x.DateTime)
+                .Take(numResults)
+                .ToList();
     }
 }

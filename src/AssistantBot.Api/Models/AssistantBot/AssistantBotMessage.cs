@@ -4,12 +4,12 @@ namespace AssistantBot.Api.Models.AssistantBot
 {
     public record AssistantBotMessage : IChatBotMessage
     {
-        public AssistantBotMessage(string user,string role, string text)
+        public AssistantBotMessage(string user,string role, string content)
         {
             DateTime = System.DateTime.UtcNow;
             User = user;
             Role = role;
-            Content = text;
+            Content = content;
         }
 
         public DateTimeOffset DateTime { get; }

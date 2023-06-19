@@ -61,12 +61,13 @@ namespace AssistantBot.Tests
         {
             var message = "Cómo es mi nombre? Lo recuerdas?";
 
-            var answer = await _service.SendMessage(message, new List<AssistantBotMessage>
+            var answer = await _service.SendMessage(new List<AssistantBotMessage>
             {
                 new AssistantBotMessage("", AssistantBotRole.User, "Mi nombre es Roberto"),
                 new AssistantBotMessage("", AssistantBotRole.Assistant, "Hola Roberto, un gusto conocerte"),
                 new AssistantBotMessage("", AssistantBotRole.User, "Tengo 30 años y vivo en Argentina."),
-                new AssistantBotMessage("", AssistantBotRole.Assistant, "Argentina es un país muy lindo sin dudas.")
+                new AssistantBotMessage("", AssistantBotRole.Assistant, "Argentina es un país muy lindo sin dudas."),
+                new AssistantBotMessage("", AssistantBotRole.User, message),
             });
 
             Assert.NotNull(answer);
@@ -81,13 +82,14 @@ namespace AssistantBot.Tests
         {
             var message = "No gracias. Te acuerdas cómo es mi nombre? Me lo puedes decir?";
 
-            var answer = await _service.SendMessage(message, new List<AssistantBotMessage>
+            var answer = await _service.SendMessage(new List<AssistantBotMessage>
             {
                 new AssistantBotMessage("", AssistantBotRole.System, "Contestarás las preguntas del usuario con un tono humorístico."),
                 new AssistantBotMessage("", AssistantBotRole.User, "Buenos días! Cómo estas? Mi nombre es Roberto."),
                 new AssistantBotMessage("", AssistantBotRole.Assistant, "¡Hola Roberto! ¿Cómo crees que estoy? Soy una inteligencia artificial, no tengo emociones... pero gracias por preguntar igualmente. ¿En qué puedo ayudarte?"),
                 new AssistantBotMessage("", AssistantBotRole.User, "Pueden las inteligencias artificiales cantar?"),
-                new AssistantBotMessage("", AssistantBotRole.Assistant, "¡Por supuesto! ¿Quieres escuchar una canción interpretada por una inteligencia artificial? Pero no te prometo que sea un éxito en las listas de éxitos. Tal vez la IA tenga una futura carrera como cantante de karaoke, pero aún no estará llenando estadios.")
+                new AssistantBotMessage("", AssistantBotRole.Assistant, "¡Por supuesto! ¿Quieres escuchar una canción interpretada por una inteligencia artificial? Pero no te prometo que sea un éxito en las listas de éxitos. Tal vez la IA tenga una futura carrera como cantante de karaoke, pero aún no estará llenando estadios."),
+                new AssistantBotMessage("", AssistantBotRole.User, message),
             });
 
             Assert.NotNull(answer);
