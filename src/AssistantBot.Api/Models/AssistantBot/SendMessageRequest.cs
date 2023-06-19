@@ -1,4 +1,6 @@
-﻿namespace AssistantBot.Models.AssistantBot
+﻿using Newtonsoft.Json;
+
+namespace AssistantBot.Models.AssistantBot
 {
     public class SendMessageRequest
     {

@@ -35,7 +35,8 @@ createApp({
              // PETICIÓN A LA API
             try {
             const dataObject = {
-                Question: this.Texto
+                Question: this.Texto,
+                User: "user"
             };
 
             const { data } = await axios.post(

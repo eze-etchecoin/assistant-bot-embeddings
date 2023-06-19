@@ -53,7 +53,7 @@ namespace AssistantBot.Services
 
             var knowledgeBaseTopResults = _indexedVectorStorage.SearchDataBySimilarVector<ParagraphWithPage>(
                 new EmbeddedTextVector(questionEmbedding.ToArray(), default(ParagraphWithPage)),
-                20);
+                15);
 
             if (!knowledgeBaseTopResults.Any())
                 throw new AssistantBotException("Error at question processing.");
