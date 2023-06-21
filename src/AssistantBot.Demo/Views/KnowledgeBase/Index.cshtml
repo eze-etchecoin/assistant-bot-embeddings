@@ -7,16 +7,18 @@
 
 
         <div class="row">
-            <h1>
-                "Agregue Información Manualmente"
-            </h1>
+
+            <legend> 
+                Add Information Manually
+            </legend>
+                          
         </div>
 
 
         <div class="row">
             <div class="col-3">
 
-                <p>Ingrese texto a guardar en base de conocimientos:</p>
+                <p>Enter Text to Save in Knowledge Base:</p>
                 <textarea rows="7" v-model="Texto" class="text-input form-control"></textarea>
 
             </div>
@@ -52,7 +54,7 @@
 
                     <button type="button" class="btn-close" aria-label="Close" v-on:click="hidenAlert"></button>
 
-                    El texto ha sido guardado con éxito
+                    The text has been successfully saved
 
                 </div>
             </div>
@@ -60,24 +62,28 @@
 
 
         <div>
-            <button type="button" v-on:click="guardar()" v-bind:disabled="buttonDisabled">Guardar</button>
+            <button type="button" class="btn btn-primary" v-on:click="guardar()" v-bind:disabled="buttonDisabled">Save</button>
         </div>
 
 
         <div class="row">
 
         </div>
+         <div class="row">
+
+        </div>
 
         <div class="row">
-            <h1>
-                "Agregue Información a través de Archivos"
-            </h1>
+            
+             <legend> 
+                Add Information via Files
+            </legend>
         </div>
 
 
         <div class="row">
             <div class="col-6 form-group">
-                <label>Seleccione archivo para subir (sólo PDF/DOC/DOCX):</label>
+                <label>Select File to Upload (PDF/DOC/DOCX Only):</label>
                 <input type="file" id="fileInput" class="form-control-file" v-on:change="checkFileSelected" />
             </div>
         </div>
@@ -86,7 +92,7 @@
         <div class="row">
             <div class="col-2 d-flex align-items-center">
                 <button type="button" class="btn btn-primary" v-on:click="uploadFile" v-bind:disabled="DisabledUploadButton">
-                    Subir
+                    Upload
                 </button>
                 <div class="ms-3">
                     <div class="spinner-border text-primary" role="status" v-if="ShowsUploadSpinner">
@@ -120,9 +126,9 @@
     <div class="row">
         <div class="col-4">
             <div class="alert alert-info">
-                <span v-if="!LastUploadedFileInfo">No hay información del último archivo subido.</span>
+                <span v-if="!LastUploadedFileInfo">No information available for the last uploaded file.</span>
                 <span v-else>
-                    Último archivo subido: <br />
+                    Last uploaded file: <br />
                     <strong>
                         {{ LastUploadedFileInfo.FileName }}  
                         <span v-if="CurrentProcessFileName && CurrentProgress < 100">(procesando)</span>
