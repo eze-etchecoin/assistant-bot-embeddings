@@ -55,14 +55,15 @@ namespace AssistantBot.Services
                 try
                 {
                     var embedding = await _chatBotService.GetEmbedding(paragraph.Text)
-                    ?? throw new AssistantBotException("An error has ocurred getting the embedding for given text.");
+                    ?? throw new AssistantBotException("An error has occurred getting the embedding for given text.");
 
                     var storedHash = _indexedVectorStorage.AddVector(
                         new EmbeddedTextVector(
                             embedding.ToArray(),
                             new ParagraphWithPage(paragraph.Page, paragraph.Text)));
+
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     _documents[fileName].ErrorMessage = $"An error has ocurred getting the embedding for given text: {ex.Message}";
                 }

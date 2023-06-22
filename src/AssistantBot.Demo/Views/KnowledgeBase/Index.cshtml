@@ -62,7 +62,7 @@
 
 
         <div>
-            <button type="button" class="btn btn-primary" v-on:click="guardar()" v-bind:disabled="buttonDisabled">Save</button>
+            <button type="button" class="btn btn-primary" v-on:click="addParagraph()" v-bind:disabled="buttonDisabled">Save</button>
         </div>
 
 
@@ -126,12 +126,16 @@
     <div class="row">
         <div class="col-4">
             <div class="alert alert-info">
-                <span v-if="!LastUploadedFileInfo">No information available for the last uploaded file.</span>
+                <span v-if="IsInitialLoading">Loading...</span>
+                <template v-else-if="!LastUploadedFileInfo">
+                    <span v-if="CurrentProcessFileName">Processing file...</span>
+                    <span v-else>No information available for the last uploaded file.</span>
+                </template>
                 <span v-else>
                     Last uploaded file: <br />
                     <strong>
                         {{ LastUploadedFileInfo.FileName }}  
-                        <span v-if="CurrentProcessFileName && CurrentProgress < 100">(procesando)</span>
+                        <span v-if="CurrentProcessFileName && CurrentProgress < 100">(processing...)</span>
                     </strong>
                     <br/>
                     {{ FormattedLastUploadedFileDateTime }}

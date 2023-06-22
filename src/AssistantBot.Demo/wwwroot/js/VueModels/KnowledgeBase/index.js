@@ -2,6 +2,9 @@ const { createApp } = Vue;
 const vm = createApp({
     data() {
         return {
+
+            IsInitialLoading: true,
+
             LastUploadedFileInfo: null,
             CurrentProcessFileName: "",
             CurrentProcessFileInfo: null,
@@ -23,7 +26,7 @@ const vm = createApp({
 
     methods: {
         // Adds any data to knowledge base
-        async guardar() {
+        async addParagraph() {
 
             this.AddParagraphErrorMessage = false;
             this.AddParagraphSuccessful = false;
@@ -79,8 +82,11 @@ const vm = createApp({
 
                 this.CurrentProcessFileName = data;
                 this.CurrentProcessFileInfo = null;
+                this.LastUploadedFileInfo = null;
 
-                setTimeout(this.getLastUploadedFileInfo, 1000)
+                await this.startCheckProgress();
+
+                //setTimeout(this.getLastUploadedFileInfo, 1000)
             }
             catch (error) {
                 this.errorHandler(error, "UploadFileErrorMessage");
@@ -92,13 +98,22 @@ const vm = createApp({
 
         async startCheckProgress() {
 
-            if (!this.CurrentProcessFileName)
-                return;
+            //if (!this.CurrentProcessFileName)
+            //    return;
 
             this.ProgressCheckInterval = setInterval(async () => {
-                this.CurrentProcessFileInfo = await this.getKnowledgeBaseFileInfo(this.CurrentProcessFileName);
-                this.CurrentProgress = this.CurrentProcessFileInfo.Progress;
+                //this.CurrentProcessFileInfo = await this.getKnowledgeBaseFileInfo(this.CurrentProcessFileName);
+                //this.CurrentProgress = this.CurrentProcessFileInfo.Progress;
+
+                await this.getLastUploadedFileInfo();
+
+                this.IsInitialLoading = false;
             }, 1000);
+        },
+
+        stopCheckProgress() {
+            clearInterval(this.ProgressCheckInterval);
+            this.ProgressCheckInterval = null;
         },
 
         async getKnowledgeBaseFileInfo(fileName) {
@@ -114,17 +129,36 @@ const vm = createApp({
         async getLastUploadedFileInfo() {
             try {
                 const { data } = await axios.get(`${ApiUrl}/KnowledgeBase/GetLastUploadedFileInfo`);
+
                 if (data) {
+
+                    if (this.CurrentProcessFileName &&
+                        this.CurrentProcessFileName != data.FileName) {
+                        // Wait until the current file is processed
+                        return;
+                    }
+
                     this.LastUploadedFileInfo = data;
+
                     if (this.LastUploadedFileInfo.Progress < 100) {
                         // There's a file being processed
                         this.CurrentProcessFileName = this.LastUploadedFileInfo.FileName;
                         this.CurrentProgress = this.LastUploadedFileInfo.Progress;
-                        await this.startCheckProgress();
+                        //await this.startCheckProgress();
                     }
+                    else {
+                        // File has been processed already
+                        this.stopCheckProgress();
+                        this.CurrentProcessFileName = "";
+                    }
+                }
+                else if (this.CurrentProcessFileName) {
+                    return;
                 }
                 else {
                     this.LastUploadedFileInfo = null;
+                    this.stopCheckProgress();
+
                 }
             }
             catch (error) {
@@ -192,17 +226,17 @@ const vm = createApp({
                 this.UploadFileErrorMessage = this.CurrentProcessFileInfo.ErrorMessage;
             }
 
-            if (this.CurrentProgress >= 100) {
-                clearInterval(this.ProgressCheckInterval);
-                this.ProgressCheckInterval = null;
-                this.CurrentProcessFileName = "";
+            //if (this.CurrentProgress >= 100) {
+            //    clearInterval(this.ProgressCheckInterval);
+            //    this.ProgressCheckInterval = null;
+            //    this.CurrentProcessFileName = "";
 
-                this.getLastUploadedFileInfo();
-            }
+            //    this.getLastUploadedFileInfo();
+            //}
         }
     },
 
     async mounted() {
-        await this.getLastUploadedFileInfo();
+        await this.startCheckProgress();
     }
 }).mount('#vueContainer');
