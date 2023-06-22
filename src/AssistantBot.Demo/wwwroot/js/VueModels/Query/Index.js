@@ -5,31 +5,31 @@ createApp({
     data() {
         return {
             User: "",
-            Texto: "",
-            textoIngresado :"",
-            textoRespuesta: "",
+            Text: "",
+            enteredText :"",
+            textResponse: "",
             alertError: "",
             
-            mostrarRespuesta: false,
+            showAnswer: false,
             isLoading: false,
         };
     },
     computed: {
         isButtonDisabled() {
-            return this.Texto === '';
+            return this.Text === '';
         }
     },
     methods: {
-        async consultar() {
-            this.textoIngresado = this.Texto;
+        async consult() {
+            this.enteredText = this.Text;
             this.alertError = "";
-            this.mostrarRespuesta = false;
+            this.showAnswer = false;
             this.isLoading = true;
 
              // PETICIÓN A LA API
             try {
             const dataObject = {
-                Question: this.Texto,
+                Question: this.Text,
                 User: this.User
             };
 
@@ -38,9 +38,9 @@ createApp({
                 dataObject);
 
             this.isLoading = false;
-            this.textoRespuesta = data;
-            this.mostrarRespuesta = true;
-            this.Texto = "";
+            this.textResponse = data;
+            this.showAnswer = true;
+            this.Text = "";
             
             }
             catch (error) {
@@ -54,7 +54,7 @@ createApp({
         },
 
         closeAlert() {
-            this.mostrarRespuesta = false;   
+            this.showAnswer = false;   
         },
 
         closeAlertError() {
