@@ -44,15 +44,35 @@ namespace AssistantBot.DocumentManagers
                     var strategy = new SimpleTextExtractionStrategy();
                     var text = PdfTextExtractor.GetTextFromPage(document.GetPage(page), strategy);
 
+                    var separator = "¬";
                     var paragraphs = text
-                        .Replace("\n", "")
-                        .Split('.')
-                        .SelectMany(x => x.Split("  ")) // Split by double space.
+                        .Replace(".\n", separator)
+                        .Replace(".\r", separator)
+                        .Replace(". \r", separator)
+                        .Replace(". \n", separator)
+                        .Replace(".  \r", separator)
+                        .Replace(".  \n", separator)
+                        .Replace("  ", separator) // Replace double space with pipe.
+                        .Split(separator)
                         .Select(x => new ParagraphWithPage
                         {
                             Page = page,
                             Text = x
                         } as IParagraphWithPage);
+
+                    #region old splitting process
+
+                    //var paragraphs = text
+                    //    .Replace("\n", "")
+                    //    .Split('.')
+                    //    .SelectMany(x => x.Split("  ")) // Split by double space.
+                    //    .Select(x => new ParagraphWithPage
+                    //    {
+                    //        Page = page,
+                    //        Text = x
+                    //    } as IParagraphWithPage);
+
+                    #endregion
 
                     // Concatenate the first paragraph of the current page with the last added paragraph to result.
                     if (page > 1)
