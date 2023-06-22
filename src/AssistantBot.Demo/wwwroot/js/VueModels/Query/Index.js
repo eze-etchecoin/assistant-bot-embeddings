@@ -1,16 +1,10 @@
-// Esto era en Vue 2
-//const vm = new Vue({
-//    el: '#vueContainer',
-//    data: {
-//        Texto: ''
-//    }
-//})
 
 const { createApp } = Vue;
 
 createApp({
     data() {
         return {
+            User: "",
             Texto: "",
             textoIngresado :"",
             textoRespuesta: "",
@@ -36,7 +30,7 @@ createApp({
             try {
             const dataObject = {
                 Question: this.Texto,
-                User: "user"
+                User: this.User
             };
 
             const { data } = await axios.post(
