@@ -16,7 +16,7 @@
     <div class="row">
         <div class="col-3">
             <p>Enter your question:</p>
-            <textarea rows="7" v-model="Texto" class="text-input form-control"></textarea>
+            <textarea rows="7" v-model="Text" class="text-input form-control"></textarea>
         </div>
     </div>
     
@@ -29,18 +29,18 @@
     </div>
 
     <div>
-         <button v-on:click="consultar" class="btn btn-primary" v-bind:disabled="isButtonDisabled">Consultar</button>
+         <button v-on:click="consult" class="btn btn-primary" v-bind:disabled="isButtonDisabled">Consult</button>
     </div>
 
-    <div v-if="mostrarRespuesta" class="row">
+    <div v-if="showAnswer" class="row">
         <div class="col-6">
             <br />
             
             <div class="alert alert-info alert-dismissible">
-                <p><strong><u>Pregunta:</u></strong></p>
-                <p>{{ textoIngresado }}</p>
-                <p><strong><u>Respuesta:</u></strong></p>
-                <p>{{ textoRespuesta }}</p>
+                <p><strong><u>Your Question:</u></strong></p>
+                <p>{{ enteredText }}</p>
+                <p><strong><u>Response:</u></strong></p>
+                <p>{{ textResponse }}</p>
                 <button type="button" class="btn-close" aria-label="Close" v-on:click="closeAlert"></button>
             </div>
         </div>
