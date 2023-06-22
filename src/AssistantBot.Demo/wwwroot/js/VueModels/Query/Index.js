@@ -16,11 +16,14 @@ createApp({
     },
     computed: {
         isButtonDisabled() {
+            return this.User === '';
             return this.Text === '';
+            
         }
     },
     methods: {
         async consult() {
+            
             this.enteredText = this.Text;
             this.alertError = "";
             this.showAnswer = false;
