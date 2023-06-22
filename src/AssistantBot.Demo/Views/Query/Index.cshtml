@@ -29,7 +29,7 @@
     </div>
 
     <div>
-         <button v-on:click="consult" class="btn btn-primary" v-bind:disabled="isButtonDisabled">Consult</button>
+        <button v-on:click="askToKnowledgeBase" class="btn btn-primary" v-bind:disabled="isButtonDisabled">Send</button>
     </div>
 
     <div v-if="showAnswer" class="row">
@@ -39,8 +39,8 @@
             <div class="alert alert-info alert-dismissible">
                 <p><strong><u>Your Question:</u></strong></p>
                 <p>{{ enteredText }}</p>
-                <p><strong><u>Response:</u></strong></p>
-                <p>{{ textResponse }}</p>
+                <p><strong><u>Answer:</u></strong></p>
+                <p>{{ textAnswer }}</p>
                 <button type="button" class="btn-close" aria-label="Close" v-on:click="closeAlert"></button>
             </div>
         </div>

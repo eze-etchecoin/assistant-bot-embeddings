@@ -7,7 +7,7 @@ createApp({
             User: "",
             Text: "",
             enteredText :"",
-            textResponse: "",
+            textAnswer: "",
             alertError: "",
             
             showAnswer: false,
@@ -22,7 +22,7 @@ createApp({
         }
     },
     methods: {
-        async consult() {
+        async askToKnowledgeBase() {
             
             this.enteredText = this.Text;
             this.alertError = "";
@@ -41,7 +41,7 @@ createApp({
                 dataObject);
 
             this.isLoading = false;
-            this.textResponse = data;
+            this.textAnswer = data;
             this.showAnswer = true;
             this.Text = "";
             
