@@ -19,7 +19,7 @@
             <div class="col-3">
 
                 <p>Enter Text to Save in Knowledge Base:</p>
-                <textarea rows="7" v-model="Texto" class="text-input form-control"></textarea>
+                <textarea rows="7" v-model="TextToAdd" class="text-input form-control"></textarea>
 
             </div>
         </div>
@@ -38,7 +38,7 @@
             <div class="col-3">
                 <div class="alert alert-danger alert-dismissible">
 
-                    <button type="button" class="btn-close" aria-label="Close" v-on:click="hidenAlert"></button>
+                    <button type="button" class="btn-close" aria-label="Close" v-on:click="hideAddParagraphAlerts"></button>
 
                     {{ AddParagraphErrorMessage }}
 
@@ -48,11 +48,11 @@
 
 
 
-        <div v-if="showingAlert" class="row">
+        <div v-if="AddParagraphSuccessful" class="row">
             <div class="col-3">
                 <div class="alert alert-success alert-dismissible">
 
-                    <button type="button" class="btn-close" aria-label="Close" v-on:click="hidenAlert"></button>
+                    <button type="button" class="btn-close" aria-label="Close" v-on:click="hideAddParagraphAlerts"></button>
 
                     The text has been successfully saved
 

@@ -12,9 +12,9 @@ const vm = createApp({
             CurrentProgress: 0,
             ProgressCheckInterval: null,
 
-            Texto: "",
+            TextToAdd: "",
             isLoading: false,
-            showingAlert: false,
+            AddParagraphSuccessful: false,
             AddParagraphErrorMessage: false,
 
             /*TestMessage: ""*/
@@ -22,15 +22,15 @@ const vm = createApp({
     },
 
     methods: {
-        //Metodos para agregar información a la base de conocimientos
+        // Adds any data to knowledge base
         async guardar() {
 
             this.AddParagraphErrorMessage = false;
-            this.showingAlert = false;
+            this.AddParagraphSuccessful = false;
             this.isLoading = true;
 
             const dataObject = {
-                Paragraph: this.Texto
+                Paragraph: this.TextToAdd
             };
 
             try {
@@ -38,7 +38,7 @@ const vm = createApp({
                     `${ApiUrl}/knowledgebase/addparagraphtoknowledgebase`,
                     dataObject);
 
-                this.showingAlert = true;
+                this.AddParagraphSuccessful = true;
             }
             catch (error) {
                 this.errorHandler(error, "AddParagraphErrorMessage");
@@ -50,11 +50,11 @@ const vm = createApp({
         },
 
 
-        hidenAlert() {
+        hideAddParagraphAlerts() {
             this.AddParagraphErrorMessage = "";
+            this.AddParagraphSuccessful = false;
         },
 
-        //metodos para subir archivos
         async uploadFile() {
             const fileInput = document.getElementById("fileInput");
 
@@ -160,7 +160,7 @@ const vm = createApp({
     computed: {
 
         buttonDisabled() {
-            return this.Texto === "";
+            return !this.TextToAdd;
         },
 
         ProgressBarStyle() {
