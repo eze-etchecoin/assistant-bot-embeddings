@@ -8,6 +8,13 @@
 
     <div class="row">
         <div class="col-3">
+            <p>Username:</p>
+            <textarea rows="1" v-model="User" class="text-input form-control"></textarea>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3">
             <p>Enter your question:</p>
             <textarea rows="7" v-model="Texto" class="text-input form-control"></textarea>
         </div>
@@ -22,7 +29,7 @@
     </div>
 
     <div>
-        <button v-on:click="consultar" v-bind:disabled="isButtonDisabled">Consultar</button>
+         <button v-on:click="consultar" class="btn btn-primary" v-bind:disabled="isButtonDisabled">Consultar</button>
     </div>
 
     <div v-if="mostrarRespuesta" class="row">
