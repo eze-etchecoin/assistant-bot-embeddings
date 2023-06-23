@@ -25,10 +25,6 @@ createApp({
         };
     },
     
-    methods: {
-        rowsUploadedFiles() {
-
-            
-    }
+    
 }).mount("#vueContainer");
 
