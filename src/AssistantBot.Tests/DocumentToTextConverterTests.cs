@@ -1,7 +1,6 @@
 ﻿using AssistantBot.Common.Interfaces;
 using AssistantBot.Services.DocumentConverter;
 using Xunit.Abstractions;
-using Xunit.Sdk;
 
 namespace AssistantBot.Tests
 {
@@ -54,6 +53,39 @@ namespace AssistantBot.Tests
             //Assert.True(paragraphs.Where(x => x.Page == 1).Count() == 4);
             //Assert.True(paragraphs.Where(x => x.Page == 2).Count() == 2);
             //Assert.True(paragraphs.Where(x => x.Page == 3).Count() == 1);
+        }
+
+        [Fact]
+        public void ConvertDocxToPlainText()
+        {
+            var filePath = Path.Combine(AppContext.BaseDirectory, "TestFiles", "pedrito-test.docx");
+
+            var text = _converter.ConvertDocumentToString(filePath);
+
+            Assert.NotNull(text);
+            Assert.NotEmpty(text);
+
+            _output.WriteLine(text);
+
+            Assert.True(
+                text.Split(" ")
+                    .Count(x => x == "Pedrito") == 2);
+        }
+
+        [Fact]
+        public void GetParagraphsFromDocxSkippingEmpty()
+        {
+            var filePath = Path.Combine(AppContext.BaseDirectory, "TestFiles", "quilmes-eclipse.docx");
+
+            var paragraphs = _converter.GetParagraphsTextWithPageNumber(filePath);
+
+            Assert.NotNull(paragraphs);
+            Assert.NotEmpty(paragraphs);
+
+            _output.WriteLine(string.Join("\n", paragraphs.Select(x => $"({x.Page}) {x.Text}")));
+
+            // All paragraphs with text.
+            Assert.True(paragraphs.Select(x => x.Text).All(x => !string.IsNullOrEmpty(x)));
         }
     }
 }
