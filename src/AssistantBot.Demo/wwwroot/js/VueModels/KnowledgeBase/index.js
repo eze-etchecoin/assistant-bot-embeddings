@@ -213,6 +213,10 @@ const vm = createApp({
                 return "";
 
             return moment(this.LastUploadedFileInfo.UploadedDateTime).format("DD/MM/YYYY HH:mm:ss");
+        },
+
+        AcceptedFileExtensions() {
+            return ".doc,.docx,.pdf";
         }
 
     },
