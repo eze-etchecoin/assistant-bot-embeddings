@@ -1,6 +1,7 @@
 ﻿using AssistantBot.DocumentManagers;
 using AssistantBot.Common.Interfaces;
 using AssistantBot.Common.Exceptions;
+using AssistantBot.Api.DocumentManagers;
 
 namespace AssistantBot.Services.DocumentConverter
 {
@@ -17,8 +18,8 @@ namespace AssistantBot.Services.DocumentConverter
             return Path.GetExtension(filePath) switch
             {
                 PdfExtension => PdfManager.ExtractTextFromDocument(filePath),
-                DocXExtension => "",
-                DocExtension => "",
+                DocXExtension => DocManager.ExtractTextFromDocument(filePath),
+                DocExtension => DocManager.ExtractTextFromDocument(filePath),
                 _ => "",
             };
         }
@@ -30,8 +31,8 @@ namespace AssistantBot.Services.DocumentConverter
             return Path.GetExtension(filePath) switch
             {
                 PdfExtension => PdfManager.ExtractTextInParagraphsFromDocument(filePath, skipEmpty),
-                DocXExtension => Enumerable.Empty<IParagraphWithPage>(),
-                DocExtension => Enumerable.Empty<IParagraphWithPage>(),
+                DocXExtension => DocManager.ExtractTextInParagraphsFromDocument(filePath, skipEmpty),
+                DocExtension => DocManager.ExtractTextInParagraphsFromDocument(filePath, skipEmpty),
                 _ => Enumerable.Empty<IParagraphWithPage>(),
             };
 

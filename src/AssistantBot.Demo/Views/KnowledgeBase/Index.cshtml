@@ -84,7 +84,7 @@
         <div class="row">
             <div class="col-6 form-group">
                 <label>Select File to Upload (PDF/DOC/DOCX Only):</label>
-                <input type="file" id="fileInput" class="form-control-file" v-on:change="checkFileSelected" />
+                <input type="file" id="fileInput" class="form-control-file" v-on:change="checkFileSelected" v-bind:accept="AcceptedFileExtensions" />
             </div>
         </div>
 
