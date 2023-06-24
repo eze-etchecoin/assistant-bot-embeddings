@@ -1,0 +1,36 @@
+﻿@section Scripts{
+    <script src="~/js/VueModels/UploadedFiles/Index.js"></script>
+}
+
+
+<div id="vueContainer" v-cloak>
+
+    <div class="row">
+
+        <legend>
+            Uploaded Files
+        </legend>
+
+    </div>
+    
+    <div class="container">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>File Name</th>
+                    <th>Date Time Uploaded</th>
+                    <th>Number of Paragraphs</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="f in rowsUploadedFiles">
+                    <td>{{ f.FileName }}</td>
+                    <td>{{ f.UploadedDateTime }}</td>
+                    <td>{{ f.TotalParagraphs }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
