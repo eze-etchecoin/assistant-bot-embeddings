@@ -1,4 +1,5 @@
-﻿using AssistantBot.Common.Interfaces;
+﻿using AssistantBot.Common.Helpers;
+using AssistantBot.Common.Interfaces;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using Newtonsoft.Json;
@@ -9,8 +10,9 @@ namespace AssistantBot.CustomCache
     public class CustomMemoryStorage<T> : IIndexedVectorStorage<T> where T : IVectorWithObject
     {
         private const int _vectorSize = 1536;
+        private const string _noComplementStr = "_NoComplementStr";
 
-        private ConcurrentDictionary<int, T> _dict;
+        private ConcurrentDictionary<string, T> _dict;
         private string _cacheFolderPath = Path.Combine(".", "Cache");
 
         private static Timer? _timer;
@@ -32,16 +34,23 @@ namespace AssistantBot.CustomCache
 
         public static Timer? Timer { get => _timer; set => _timer = value; }
 
-        public int AddVector(T vector)
+        public string AddVector(T vector, string? keyComplementStr = null)
         {
-            var hashCode = CalculateHashCode(vector);
+            var hashCode = HashCodeHelper.CalculateHashCode(vector.Values);
 
-            if (!_dict.ContainsKey(hashCode))
+            if(string.IsNullOrEmpty(keyComplementStr))
             {
-                _dict[hashCode] = vector;
+                keyComplementStr = _noComplementStr;
             }
 
-            return hashCode;
+            var uniqueKey = $"{hashCode}_{keyComplementStr}";
+
+            if (!_dict.ContainsKey(uniqueKey))
+            {
+                _dict[uniqueKey] = vector;
+            }
+
+            return uniqueKey;
         }
 
         public bool Contains(T vector)
@@ -51,10 +60,10 @@ namespace AssistantBot.CustomCache
 
         public void DeleteAllKeys()
         {
-            _dict = new ConcurrentDictionary<int, T>();
+            _dict = new ConcurrentDictionary<string, T>();
         }
 
-        public string? GetDataByKey(int key)
+        public string? GetDataByKey(string key)
         {
             if (!_dict.TryGetValue(key, out var value))
             {
@@ -66,7 +75,7 @@ namespace AssistantBot.CustomCache
             return result;
         }
 
-        public IEnumerable<int> GetKeys()
+        public IEnumerable<string> GetKeys()
         {
             return _dict.Keys;
         }
@@ -101,7 +110,7 @@ namespace AssistantBot.CustomCache
             throw new NotImplementedException();
         }
 
-        public void Set(int key, T value)
+        public void Set(string key, T value)
         {
             _dict[key] = value;
         }
@@ -110,16 +119,6 @@ namespace AssistantBot.CustomCache
         {
             return _dict != null ? "OK" : "No OK";
         }
-
-        private static int CalculateHashCode(T vector) =>
-            vector.Values.Aggregate(
-                new HashCode(),
-                (hash, value) =>
-                {
-                    hash.Add(value);
-                    return hash;
-                })
-                .ToHashCode();
 
         private void PersistCache(object? state)
         {
@@ -133,12 +132,25 @@ namespace AssistantBot.CustomCache
 
             foreach (var item in _dict)
             {
-                var hashCode = item.Key.ToString();
-                var charsForFolder = hashCode.Length < 5 ? hashCode : hashCode.Substring(0, 5);
+                var key = item.Key.ToString();
+
+                var hashCode = key.Split("_")[0];
+                var keyComplementStr = hashCode.Length == key.Length
+                    ? ""
+                    : key[(hashCode.Length + 1)..];
+
+                var charsForFolder = hashCode.Length < 5 ? hashCode : hashCode[..5];
                 var fileName = $"{hashCode}";
 
                 var folderPath = Path.Combine(_cacheFolderPath);
-                foreach(var c in charsForFolder)
+
+                folderPath = Path.Combine(
+                    folderPath,
+                    string.IsNullOrEmpty(keyComplementStr)
+                        ? _noComplementStr
+                        : keyComplementStr);
+
+                foreach (var c in charsForFolder)
                 {
                     folderPath = Path.Combine(folderPath, c.ToString());
                 }
@@ -185,12 +197,10 @@ namespace AssistantBot.CustomCache
 
             foreach(var file in files)
             {
-                var key = int.Parse(Path.GetFileNameWithoutExtension(file));
+                var hashCode = int.Parse(Path.GetFileNameWithoutExtension(file));
+                var keyComplementStr = file.Split(Path.DirectorySeparatorChar)[2];
 
-                //if(_dict.ContainsKey(key))
-                //{
-                //    continue;
-                //}
+                var key = $"{hashCode}_{keyComplementStr}";
 
                 // Read values and data from binary file
                 using var fileStream = File.OpenRead(file);

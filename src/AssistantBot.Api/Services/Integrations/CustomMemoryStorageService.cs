@@ -2,6 +2,7 @@
 using AssistantBot.Configuration;
 using AssistantBot.Common.Helpers;
 using RestSharp;
+using AssistantBot.Common.DataTypes;
 
 namespace AssistantBot.Services.Integrations
 {
@@ -17,10 +18,18 @@ namespace AssistantBot.Services.Integrations
 
         public int VectorSize => _vectorSize;
 
-        public int AddVector(T vector)
+        public string AddVector(T vector, string? keyComplementStr = null)
         {
-            var restSharpHelper = new RestSharpJsonHelper<T, int>(_client);
-            var response = restSharpHelper.ExecuteRequestAsync("/AddVector", Method.Post, vector).Result;
+            var restSharpHelper = new RestSharpJsonHelper<AddVectorRequest, string>(_client);
+            var response = restSharpHelper.ExecuteRequestAsync(
+                url: "/AddVector", 
+                method: Method.Post, 
+                body: new AddVectorRequest
+                {
+                    Vector = vector as EmbeddedTextVector,
+                    KeyComplementStr = keyComplementStr
+                }).Result;
+
             return response;
         }
 
@@ -35,7 +44,7 @@ namespace AssistantBot.Services.Integrations
             _ = restSharpHelper.ExecuteRequestAsync("/DeleteAllKeys", Method.Delete);
         }
 
-        public string? GetDataByKey(int key)
+        public string? GetDataByKey(string key)
         {
             var restSharpHelper = new RestSharpJsonHelper<object, string>(_client);
             var response = restSharpHelper.ExecuteRequestAsync($"/GetDataByKey?key={key}", Method.Get).Result;
@@ -43,9 +52,9 @@ namespace AssistantBot.Services.Integrations
             return response;
         }
 
-        public IEnumerable<int> GetKeys()
+        public IEnumerable<string> GetKeys()
         {
-            var restSharpHelper = new RestSharpJsonHelper<object, IEnumerable<int>>(_client);
+            var restSharpHelper = new RestSharpJsonHelper<object, IEnumerable<string>>(_client);
             var response = restSharpHelper.ExecuteRequestAsync("/GetKeys", Method.Get).Result;
             return response;
         }
@@ -70,7 +79,7 @@ namespace AssistantBot.Services.Integrations
             throw new NotImplementedException();
         }
 
-        public void Set(int key, T value)
+        public void Set(string key, T value)
         {
             throw new NotImplementedException();
         }

@@ -1,4 +1,5 @@
-﻿using AssistantBot.Common.Interfaces;
+﻿using AssistantBot.Common.Helpers;
+using AssistantBot.Common.Interfaces;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 using System.Diagnostics;
@@ -17,6 +18,7 @@ namespace AssistantBot.Services.RedisStorage
         private const int _indexVectorSize = _vectorSize * sizeof(double);
         private const string _textField = "text";
         private const string _embeddingField = "embedding";
+        private const string _noComplementStr = "_NoComplementStr";
 
         public RedisVectorStorageService(string redisUrl)
         {
@@ -29,7 +31,7 @@ namespace AssistantBot.Services.RedisStorage
 
         public int VectorSize => _vectorSize;
 
-        public string? GetDataByKey(int key)
+        public string? GetDataByKey(string key)
         {
             var value = _db.HashGet(key.ToString(), _textField);
             if (value.HasValue)
@@ -38,7 +40,7 @@ namespace AssistantBot.Services.RedisStorage
                 return null;
         }
 
-        public void Set(int key, T value)
+        public void Set(string key, T value)
         {
             throw new System.NotImplementedException();
         }
@@ -48,16 +50,23 @@ namespace AssistantBot.Services.RedisStorage
             throw new System.NotImplementedException();
         }
 
-        public int AddVector(T vector)
+        public string AddVector(T vector, string? keyComplementStr = null)
         {
             var vectorString = GetVectorHexRepresentation(vector);
             var jsonData = JsonConvert.SerializeObject(vector.Data);
-            var hash = CalculateHashCode(vector);
+            var hash = HashCodeHelper.CalculateHashCode(vector.Values);
 
-            _db.Execute("HSET", hash.ToString(), _textField, jsonData, _embeddingField, vectorString);
+            if (string.IsNullOrEmpty(keyComplementStr))
+            {
+                keyComplementStr = _noComplementStr;
+            }
+
+            var key = $"{hash}_{keyComplementStr}";
+
+            _db.Execute("HSET", key, _textField, jsonData, _embeddingField, vectorString);
             //_db.Execute("FT.ADD", _indexName, stringGuid, "1.0", "FIELDS", _textField, jsonData, _embeddingField, vectorString);
 
-            return hash;
+            return key;
         }
 
         public void RemoveVector(T vector)
@@ -161,9 +170,9 @@ namespace AssistantBot.Services.RedisStorage
             return $"PING result: {result} | Response time: {stopwatch.ElapsedMilliseconds}ms";
         }
 
-        public IEnumerable<int> GetKeys()
+        public IEnumerable<string> GetKeys()
         {
-            return _server.Keys().Select(x => Convert.ToInt32(x));
+            return _server.Keys().Select(x => x.ToString());
         }
 
         public void DeleteAllKeys()
@@ -186,14 +195,6 @@ namespace AssistantBot.Services.RedisStorage
             return sb.ToString();
         }
 
-        private static int CalculateHashCode(T vector) =>
-            vector.Values.Aggregate(
-                new HashCode(),
-                (hash, value) =>
-                {
-                    hash.Add(value);
-                    return hash;
-                })
-                .ToHashCode();
+        
     }
 }

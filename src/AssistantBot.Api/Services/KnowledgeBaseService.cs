@@ -24,10 +24,10 @@ namespace AssistantBot.Services
             _documents ??= new Dictionary<string, KnowledgeBaseFileInfo>();
         }
 
-        public async Task<int> AddParagraphToKnowledgeBase(string paragraph)
+        public async Task<string> AddParagraphToKnowledgeBase(string paragraph)
         {
             if (string.IsNullOrEmpty(paragraph))
-                return 0;
+                return "";
 
             var embedding = await _chatBotService.GetEmbedding(paragraph) 
                 ?? throw new AssistantBotException("An error has ocurred getting the embedding for given text.");
@@ -49,6 +49,7 @@ namespace AssistantBot.Services
             var totalParagraphs = paragraphs.Count();
 
             _documents[fileName] = new KnowledgeBaseFileInfo(fileName, totalParagraphs);
+            var keyComplementStr = fileName.Replace(".", "-");
 
             foreach (var paragraph in paragraphs)
             {
@@ -60,7 +61,8 @@ namespace AssistantBot.Services
                     var storedHash = _indexedVectorStorage.AddVector(
                         new EmbeddedTextVector(
                             embedding.ToArray(),
-                            new ParagraphWithPage(paragraph.Page, paragraph.Text)));
+                            new ParagraphWithPage(paragraph.Page, paragraph.Text)),
+                        keyComplementStr);
 
                 }
                 catch (Exception ex)

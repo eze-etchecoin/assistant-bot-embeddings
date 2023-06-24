@@ -11,8 +11,8 @@ namespace AssistantBot.CustomCache
                 "/AddVector", 
                 async(HttpContext context, CustomMemoryStorage<EmbeddedTextVector> storage) =>
                 {
-                    var vectorObject = await context.Request.ReadFromJsonAsync<EmbeddedTextVector>();
-                    var storedHash = storage.AddVector(vectorObject);
+                    var requestObject = await context.Request.ReadFromJsonAsync<AddVectorRequest>();
+                    var storedHash = storage.AddVector(requestObject.Vector, requestObject.KeyComplementStr);
                     return Results.Ok(storedHash);
                 })
             .WithName("AddVector");
@@ -39,7 +39,7 @@ namespace AssistantBot.CustomCache
                     if (string.IsNullOrEmpty(key))
                         return Results.BadRequest("A valid key must be specified.");
 
-                    var result = storage.GetDataByKey(Convert.ToInt32(key));
+                    var result = storage.GetDataByKey(key);
 
                     if (result == null)
                         return Results.BadRequest("Invalid key");
