@@ -44,16 +44,7 @@ namespace AssistantBot.DocumentManagers
                     var strategy = new SimpleTextExtractionStrategy();
                     var text = PdfTextExtractor.GetTextFromPage(document.GetPage(page), strategy);
 
-                    var separator = "¬";
-                    var paragraphs = text
-                        .Replace(".\n", separator)
-                        .Replace(".\r", separator)
-                        .Replace(". \r", separator)
-                        .Replace(". \n", separator)
-                        .Replace(".  \r", separator)
-                        .Replace(".  \n", separator)
-                        .Replace("  ", separator) // Replace double space with pipe.
-                        .Split(separator)
+                    var paragraphs = SplitTextInParagraphs(text)
                         .Select(x => new ParagraphWithPage
                         {
                             Page = page,
@@ -94,6 +85,39 @@ namespace AssistantBot.DocumentManagers
             }
 
             return result;
+        }
+
+        public static int GetNumberOfParagraphs(string filePath)
+        {
+            var reader = new PdfReader(filePath);
+            using var document = new PdfDocument(reader);
+            var result = 0;
+
+            for (int page = 1; page <= document.GetNumberOfPages(); page++)
+            {
+                var strategy = new SimpleTextExtractionStrategy();
+                var text = PdfTextExtractor.GetTextFromPage(document.GetPage(page), strategy);
+
+                var paragraphs = SplitTextInParagraphs(text);
+
+                result += paragraphs.Length;
+            }
+
+            return result;
+        }
+
+        private static string[] SplitTextInParagraphs(string text)
+        {
+            var separator = "¬";
+            return text
+                .Replace(".\n", separator)
+                .Replace(".\r", separator)
+                .Replace(". \r", separator)
+                .Replace(". \n", separator)
+                .Replace(".  \r", separator)
+                .Replace(".  \n", separator)
+                .Replace("  ", separator) // Replace double space with pipe.
+                .Split(separator);
         }
     }
 }

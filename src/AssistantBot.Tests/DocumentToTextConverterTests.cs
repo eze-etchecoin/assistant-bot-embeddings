@@ -6,7 +6,7 @@ namespace AssistantBot.Tests
 {
     public class DocumentToTextConverterTests
     {
-        private readonly IDocumentToTextConverter _converter;
+        private readonly IDocumentToTextProcessor _converter;
         private readonly ITestOutputHelper _output;
 
         public DocumentToTextConverterTests(ITestOutputHelper output)

@@ -1,5 +1,6 @@
 ﻿using AssistantBot.Common.DataTypes;
 using AssistantBot.Common.Interfaces;
+using StackExchange.Redis;
 using System.Text;
 using Xceed.Words.NET;
 
@@ -42,6 +43,12 @@ namespace AssistantBot.Api.DocumentManagers
             }
 
             return result;
+        }
+
+        public static int GetNumberOfParagraphs(string filePath)
+        {
+            using var loadedDocx = DocX.Load(filePath);
+            return loadedDocx.Paragraphs.Count;
         }
     }
 }
