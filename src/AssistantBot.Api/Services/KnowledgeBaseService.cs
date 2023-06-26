@@ -3,7 +3,7 @@ using AssistantBot.Common.Interfaces;
 using AssistantBot.Common.Exceptions;
 using AssistantBot.Services.DocumentConverter;
 using AssistantBot.Models.KnowledgeBase;
-using static iText.Svg.SvgConstants;
+using AssistantBot.Configuration;
 
 namespace AssistantBot.Services
 {
@@ -11,17 +11,39 @@ namespace AssistantBot.Services
     {
         private readonly IChatBotService _chatBotService;
         private readonly IIndexedVectorStorage<EmbeddedTextVector> _indexedVectorStorage;
+        private readonly AssistantBotConfiguration _config;
 
         private static Dictionary<string, KnowledgeBaseFileInfo> _documents;
 
         public KnowledgeBaseService(
             IChatBotService chatBotService,
-            IIndexedVectorStorage<EmbeddedTextVector> indexedVectorStorage)
+            IIndexedVectorStorage<EmbeddedTextVector> indexedVectorStorage,
+            AssistantBotConfiguration config)
         {
             _chatBotService = chatBotService;
             _indexedVectorStorage = indexedVectorStorage;
+            _config = config;
 
-            _documents ??= new Dictionary<string, KnowledgeBaseFileInfo>();
+            _documents ??= ReadUploadedFiles();
+        }
+
+        private Dictionary<string, KnowledgeBaseFileInfo> ReadUploadedFiles()
+        {
+            var result = new Dictionary<string, KnowledgeBaseFileInfo>();
+
+            var files = Directory.GetFiles(_config.UploadedFilesFolderPath);
+
+            foreach (var file in files)
+            {
+                var fileName = Path.GetFileName(file);
+
+                result[fileName] = new KnowledgeBaseFileInfo(
+                    fileName,
+                    0,
+                    File.GetCreationTime(file));
+            }
+
+            return result;
         }
 
         public async Task<string> AddParagraphToKnowledgeBase(string paragraph)
@@ -86,7 +108,7 @@ namespace AssistantBot.Services
         //    //return Convert.ToInt32((decimal)docInfo.ProcessedParagraphs / docInfo.TotalParagraphs * 100);
         //}
 
-        internal KnowledgeBaseFileInfo? GetKnowledgeBaseFileInfo(string fileName)
+        internal static KnowledgeBaseFileInfo? GetKnowledgeBaseFileInfo(string fileName)
         {
             if (_documents.ContainsKey(fileName) == false)
                 return null;
@@ -96,15 +118,20 @@ namespace AssistantBot.Services
             return docInfo;
         }
 
-        internal KnowledgeBaseFileInfo? GetLastUploadedFileInfo()
+        internal static KnowledgeBaseFileInfo? GetLastUploadedFileInfo()
         {
             if (!_documents.Any())
                 return null;
 
             return _documents
-                .OrderBy(x => x.Value.UploadedDateTime)
-                .LastOrDefault()
+                .OrderByDescending(x => x.Value.UploadedDateTime)
+                .FirstOrDefault()
                 .Value;
+        }
+
+        internal static IEnumerable<KnowledgeBaseFileInfo> GetAllUploadedFilesInfo()
+        {
+            return _documents.Values.OrderBy(x => x.FileName);
         }
     }
 }

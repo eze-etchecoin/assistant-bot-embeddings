@@ -12,6 +12,14 @@ namespace AssistantBot.Tests
     public class KnowledgeBaseServiceTests
     {
         private readonly KnowledgeBaseService _service;
+
+        private readonly AssistantBotConfiguration _config = new(
+            Options.Create(new AssistantBotConfigurationOptions
+            {
+                CustomCacheUrl = "https://localhost:44328",
+                UploadedFilesFolderPath = Path.Combine(".", "UploadedFiles")
+            }));
+
         private readonly ITestOutputHelper _outputHelper;
 
         public KnowledgeBaseServiceTests(ITestOutputHelper outputHelper)
@@ -22,12 +30,8 @@ namespace AssistantBot.Tests
                     .CreateService(ChatBotServiceOption.ChatGpt),
 
                 //new RedisVectorStorageService<EmbeddedTextVector>("localhost:6379")
-                new CustomMemoryStorageService<EmbeddedTextVector>(
-                    new AssistantBotConfiguration(
-                        Options.Create(new AssistantBotConfigurationOptions
-                        {
-                            CustomCacheUrl = "https://localhost:44328"
-                        }))));
+                new CustomMemoryStorageService<EmbeddedTextVector>(_config),
+                _config);
         }
 
         [Fact]

@@ -1,6 +1,7 @@
 ﻿using AssistantBot.Common.DataTypes;
 using AssistantBot.Common.Exceptions;
 using AssistantBot.Common.Interfaces;
+using AssistantBot.Configuration;
 using AssistantBot.Models.KnowledgeBase;
 using AssistantBot.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -13,13 +14,15 @@ namespace AssistantBot.Controllers
     public class KnowledgeBaseController : ControllerBase
     {
         private readonly KnowledgeBaseService _service;
+        private readonly AssistantBotConfiguration _config;
 
         public KnowledgeBaseController(
             IChatBotService chatBotService,
-            IIndexedVectorStorage<EmbeddedTextVector> indexedVectorStorage)
+            IIndexedVectorStorage<EmbeddedTextVector> indexedVectorStorage,
+            AssistantBotConfiguration config)
         {
-            _service = new KnowledgeBaseService(chatBotService, indexedVectorStorage);
-
+            _service = new KnowledgeBaseService(chatBotService, indexedVectorStorage, config);
+            _config = config;
         }
 
         [HttpPost("AddParagraphToKnowledgeBase")]
@@ -61,7 +64,7 @@ namespace AssistantBot.Controllers
                     if (!validExtensions.Contains(extension.ToLower()))
                         throw new AssistantBotException("Invalid file extension.");
 
-                    var uploadedFilesFolder = Path.Combine(".", "UploadedFiles");
+                    var uploadedFilesFolder = _config.UploadedFilesFolderPath;
                     if (!Directory.Exists(uploadedFilesFolder))
                     {
                         Directory.CreateDirectory(uploadedFilesFolder);
@@ -104,7 +107,7 @@ namespace AssistantBot.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(KnowledgeBaseFileInfo))]
         public IActionResult GetKnowledgeBaseFileInfo(string fileName)
         {
-            var fileInfo = _service.GetKnowledgeBaseFileInfo(fileName);
+            var fileInfo = KnowledgeBaseService.GetKnowledgeBaseFileInfo(fileName);
             return Ok(fileInfo);
         }
 
@@ -112,15 +115,16 @@ namespace AssistantBot.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(KnowledgeBaseFileInfo))]
         public IActionResult GetLastUploadedFileInfo()
         {
-            var fileInfo = _service.GetLastUploadedFileInfo();
+            var fileInfo = KnowledgeBaseService.GetLastUploadedFileInfo();
             return Ok(fileInfo);
         }
 
-        //[HttpGet("Test")]
-        //[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
-        //public IActionResult Test()
-        //{
-        //    return Ok("Hello from API!");
-        //}
+        [HttpGet("GetAllUploadedFilesInfo")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<KnowledgeBaseFileInfo>))]
+        public IActionResult GetAllUploadedFilesInfo()
+        {
+            var fileInfo = KnowledgeBaseService.GetAllUploadedFilesInfo();
+            return Ok(fileInfo);
+        }
     }
 }

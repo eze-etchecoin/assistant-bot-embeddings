@@ -15,6 +15,12 @@
             ProcessedParagraphs = 0;
         }
 
+        public KnowledgeBaseFileInfo(string fileName, int totalParagraphs, DateTimeOffset uploadedDateTime) 
+            : this(fileName, totalParagraphs)
+        {
+            UploadedDateTime = uploadedDateTime;
+        }
+
         public string FileName { get; set; }
         public DateTimeOffset UploadedDateTime { get; set; }
         public int TotalParagraphs { get; set; }
@@ -24,7 +30,7 @@
         public int Progress
         { 
             get => TotalParagraphs == 0 
-                ? 0 
+                ? 100 
                 : (int)Math.Round((double)ProcessedParagraphs / TotalParagraphs * 100);
             set { }
         }

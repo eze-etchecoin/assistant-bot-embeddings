@@ -12,8 +12,8 @@ namespace AssistantBot.Configuration
         }
 
         public string CustomCacheUrl => _options.Value.CustomCacheUrl;
-
         public string DemoUrl => _options.Value.DemoUrl;
+        public string UploadedFilesFolderPath => _options.Value.UploadedFilesFolderPath;
     }
 
     public class AssistantBotConfigurationOptions
@@ -22,9 +22,11 @@ namespace AssistantBot.Configuration
         {
             CustomCacheUrl = "localhost";
             DemoUrl = "";
+            UploadedFilesFolderPath = "";
         }
 
         public string CustomCacheUrl { get; set; }
         public string DemoUrl { get; set; }
+        public string UploadedFilesFolderPath { get; set; }
     }
 }
