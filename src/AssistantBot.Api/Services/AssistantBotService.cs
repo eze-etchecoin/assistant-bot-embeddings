@@ -97,7 +97,7 @@ namespace AssistantBot.Services
         private List<IChatBotMessage> GetMessagesHistory(string user, int numResults = 11) =>
             _messages.Where(x => x.User == user)
                 .OrderBy(x => x.DateTime)
-                .Take(numResults)
+                .TakeLast(numResults)
                 .ToList();
     }
 }

@@ -60,7 +60,7 @@ namespace AssistantBot.Services.ChatGpt
 
             var messagesList = new List<ChatMessageModel>();
             messagesList.AddRange(
-                messages.Select(x => new ChatMessageModel(MapRole(x.Role), x.Content)));
+                messages.Select(x => new ChatMessageModel(MapRole(x.Role), x.Content)).ToList());
 
             //messagesList.Add(new ChatMessageModel(ChatMessageRoles.User, message));
 
