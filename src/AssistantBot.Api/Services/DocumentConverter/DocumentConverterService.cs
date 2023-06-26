@@ -5,7 +5,7 @@ using AssistantBot.Api.DocumentManagers;
 
 namespace AssistantBot.Services.DocumentConverter
 {
-    public class DocumentConverterService : IDocumentToTextConverter
+    public class DocumentConverterService : IDocumentToTextProcessor
     {
         private const string PdfExtension = ".pdf";
         private const string DocExtension = ".doc";
@@ -37,6 +37,19 @@ namespace AssistantBot.Services.DocumentConverter
             };
 
             throw new NotImplementedException();
+        }
+
+        public int GetNumberOfParagraphs(string filePath)
+        {
+            CheckFileExtension(filePath);
+
+            return Path.GetExtension(filePath) switch
+            {
+                PdfExtension => PdfManager.GetNumberOfParagraphs(filePath),
+                DocXExtension => DocManager.GetNumberOfParagraphs(filePath),
+                DocExtension => DocManager.GetNumberOfParagraphs(filePath),
+                _ => 0,
+            };
         }
 
         private static void CheckFileExtension(string filePath)

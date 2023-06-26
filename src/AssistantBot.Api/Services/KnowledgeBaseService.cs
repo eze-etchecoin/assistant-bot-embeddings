@@ -32,15 +32,25 @@ namespace AssistantBot.Services
             var result = new Dictionary<string, KnowledgeBaseFileInfo>();
 
             var files = Directory.GetFiles(_config.UploadedFilesFolderPath);
+            var documentConverterService = new DocumentConverterService();
 
             foreach (var file in files)
             {
                 var fileName = Path.GetFileName(file);
 
-                result[fileName] = new KnowledgeBaseFileInfo(
-                    fileName,
-                    0,
-                    File.GetCreationTime(file));
+                try
+                {
+                    result[fileName] = new KnowledgeBaseFileInfo(
+                        fileName,
+                        documentConverterService.GetNumberOfParagraphs(file),
+                        File.GetCreationTime(file));
+
+                    result[fileName].ProcessedParagraphs = result[fileName].TotalParagraphs;
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
             }
 
             return result;
